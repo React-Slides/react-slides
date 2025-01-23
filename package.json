@@ -8,19 +8,19 @@
     "react-dom": "^18.2.0",
     "lucide-react": "^0.263.1",
     "recharts": "^2.10.3",
-    "react-markdown": "^8.0.5",
-    "remark-gfm": "^3.0.1",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
     "rehype-highlight": "^6.0.0",
     "rehype-raw": "^6.1.1",
     "rehype-katex": "^7.0.0",
     "remark-math": "^6.0.0",
-    "katex": "^0.16.9"
+    "katex": "^0.16.9",
+    "@tailwindcss/typography": "^0.5.10"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "cloudflare-build": "npm install @rollup/rollup-linux-x64-gnu && vite build"
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
