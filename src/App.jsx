@@ -11,7 +11,7 @@ function App() {
     // Load README.md for landing page
     const loadReadme = async () => {
       try {
-        const response = await fetch('/README.md');
+        const response = await fetch('./README.md');
         const content = await response.text();
         setReadmeContent(content);
       } catch (error) {
@@ -24,7 +24,7 @@ function App() {
 
   const startPresentation = async () => {
     try {
-      const response = await fetch('/content.md');
+      const response = await fetch('./content.md');
       const content = await response.text();
       setMarkdownContent(content);
       setIsPresentation(true);
