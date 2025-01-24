@@ -14,8 +14,8 @@ Transform your markdown files into interactive slide decks!
 
 ## Key Features 🚀
 
-- Create slides using Markdown syntax
-- Separate slides using `---` delimiter
+- Create slides using Markdown syntax (with some limitations)
+- Separate slides using delimiter
 - Support for GitHub Flavored Markdown
 - Responsive design
 - Built with React and Vite
@@ -35,6 +35,7 @@ Transform your markdown files into interactive slide decks!
 ## Getting Started 💻
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/your-username/react-slides.git
 cd react-slides
@@ -45,6 +46,7 @@ cd react-slides
 ## Installation 🛠
 
 Install dependencies:
+
 ```bash
 npm install
 ```
@@ -59,16 +61,16 @@ npm run dev
 ## Creating Slides 📝
 
 Create your slides in the `content.md` file using markdown syntax.
-Separate each slide with `---`.
+Separate each slide with `-\-\-`
 
 Example:
 ```markdown
-# First Slide
+# First Example Slide
 This is my first slide
 
 ---
 
-## Second Slide
+## Second Example Slide
 - Bullet point 1
 - Bullet point 2
 ```
