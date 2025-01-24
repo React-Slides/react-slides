@@ -1,4 +1,4 @@
-# React Slides
+# React Slides 🎯
 
 A modern, markdown-driven slide deck presentation tool built with React and Vite. This tool allows you to create beautiful presentations using simple markdown syntax.
 
@@ -14,6 +14,37 @@ A modern, markdown-driven slide deck presentation tool built with React and Vite
 - Interactive charts powered by Recharts
 - Support for math equations (KaTeX)
 - Syntax highlighting for code blocks
+
+## Using Emojis in Slides ✨
+
+Enhance your slides with emojis! Simply add them to your markdown content. Here are some useful emojis for presentations:
+
+### Common Use Cases
+- 🎯 Section titles/targets
+- 🚀 Features/launches
+- 💡 Ideas/tips
+- 📈 Trends/growth
+- 💻 Code examples
+- 📊 Charts/data
+- 🛠️ Setup/installation
+- 📝 Notes/documentation
+- ⚡ Performance/speed
+- 🔍 Details/search
+- 🎨 Design/styling
+- 🔧 Configuration
+- �� Interactivity
+- 🌟 Highlights
+- 🎉 Celebrations/completion
+
+### How to Use
+Simply copy and paste emojis into your markdown:
+```markdown
+# Welcome to My Presentation 🎯
+
+## Key Features 🚀
+
+## Code Example 💻
+```
 
 ## Getting Started
 

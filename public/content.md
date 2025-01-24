@@ -1,39 +1,90 @@
-# Welcome to React Slides 🎯
+# React Slides 🎯
 
-A modern, markdown-driven presentation tool
+A modern, markdown-driven presentation tool built with React and Vite.
+
+---
+
+## What is React Slides?
+
+This tool allows you to create beautiful presentations using simple markdown syntax.
+
+Transform your markdown files into interactive slide decks!
 
 ---
 
 ## Key Features 🚀
 
-- Write presentations in Markdown
-- Beautiful typography with Tailwind CSS
-- Interactive charts with Recharts
-- Icons from Lucide React
-- Math equations support (KaTeX)
-- Code syntax highlighting
+- Create slides using Markdown syntax
+- Separate slides using `---` delimiter
+- Support for GitHub Flavored Markdown
+- Responsive design
+- Built with React and Vite
 
 ---
 
-## Markdown Examples ✨
+## Styling Features ✨
 
-**Bold text** and *italic text*
+- Styled with Tailwind CSS
+- Beautiful icons powered by Lucide React
+- Interactive charts powered by Recharts
+- Support for math equations (KaTeX)
+- Syntax highlighting for code blocks
 
-Lists:
-- Item 1
-- Item 2
-- Item 3
+---
+
+## Getting Started 💻
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/react-slides.git
+cd react-slides
+```
+
+---
+
+## Installation 🛠
+
+Install dependencies:
+```bash
+npm install
+```
+
+Start the development server:
+```bash
+npm run dev
+```
+
+---
+
+## Creating Slides 📝
+
+Create your slides in the `content.md` file using markdown syntax.
+Separate each slide with `---`.
+
+Example:
+```markdown
+# First Slide
+This is my first slide
+
+---
+
+## Second Slide
+- Bullet point 1
+- Bullet point 2
+```
 
 ---
 
 ## Code Example 💻
 
 ```javascript
-function greet(name) {
-  console.log(`Hello, ${name}!`);
+function createSlide(content) {
+  return {
+    title: 'My Slide',
+    content: content,
+    render: () => console.log('Rendering slide...')
+  };
 }
-
-greet('World');
 ```
 
 ---
@@ -42,33 +93,16 @@ greet('World');
 
 ```jsx
 <LineChart width={500} height={300} data={data}>
+  <CartesianGrid strokeDasharray="3 3" />
   <XAxis dataKey="name" />
   <YAxis />
-  <Line type="monotone" dataKey="value" />
+  <Tooltip />
+  <Line type="monotone" dataKey="value" stroke="#8884d8" />
 </LineChart>
 ```
 
 ---
 
-## Math Support 🔢
+# Ready to Create? 🎉
 
-Inline math: $E = mc^2$
-
-Block math:
-$$
-\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
-$$
-
----
-
-## Navigation 🎮
-
-- Use arrow keys ← →
-- Click Previous/Next buttons
-- Or swipe on touch devices
-
----
-
-# Ready to Begin? 🎉
-
-Start creating your own slides now!
+Start building your own presentations with React Slides!
