@@ -2,11 +2,25 @@ import React, { useState, useEffect } from 'react';
 import SlideDeck from './components/SlideDeck';
 import ReactMarkdown from 'react-markdown';
 
+/**
+ * Main application component that handles the presentation mode switching and content loading.
+ * Initially displays the first slide with a start button, then transitions to full presentation mode.
+ * 
+ * @component
+ * @returns {JSX.Element} Either the presentation preview or full SlideDeck component
+ */
 function App() {
+  // State for storing the raw markdown content
   const [markdownContent, setMarkdownContent] = useState('');
+  // State for storing parsed slides
   const [slides, setSlides] = useState([]);
+  // State for tracking presentation mode
   const [isFullPresentation, setIsFullPresentation] = useState(false);
 
+  /**
+   * Effect hook to load and parse the markdown content when component mounts.
+   * Fetches content from content.md file and splits it into individual slides.
+   */
   useEffect(() => {
     const loadContent = async () => {
       try {
@@ -24,14 +38,19 @@ function App() {
     loadContent();
   }, []);
 
+  /**
+   * Switches the application to full presentation mode
+   */
   const startPresentation = () => {
     setIsFullPresentation(true);
   };
 
+  // Render full presentation mode if active
   if (isFullPresentation) {
     return <SlideDeck markdownContent={markdownContent} />;
   }
 
+  // Render preview mode with first slide and start button
   return (
     <div className="min-h-screen bg-white p-8">
       <div className="prose prose-lg max-w-4xl mx-auto">

@@ -1,14 +1,19 @@
+/* Import Tailwind's base, components, and utilities styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global root variables and font configuration */
 :root {
+  /* System font stack with Inter as primary font */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 }
 
+/* Base body styles */
 body {
+  /* Reset margins and set minimum dimensions */
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
