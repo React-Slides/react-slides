@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MarkdownFormState } from '../types';
+import MetaPrompt from './MetaPrompt';
 
 interface MarkdownFormProps {
   onSubmit: (markdown: string) => void;
@@ -40,9 +41,9 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
       // Call the onSubmit callback with the markdown content
       onSubmit(formState.markdown);
 
-      // Reset form after successful submission
+      // Reset error state
       setFormState({
-        markdown: '',
+        ...formState,
         isSubmitting: false,
         error: null
       });
@@ -56,13 +57,15 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Create Slides from Markdown</h2>
+    <div className="p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold mb-6">Create Slides from Markdown</h2>
+      
+      <MetaPrompt />
       
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="markdown" className="block mb-2 text-gray-700">
-            Paste your markdown content below (use --- to separate slides):
+          <label htmlFor="markdown" className="block mb-2 text-gray-700 font-medium">
+            Paste your markdown content below:
           </label>
           <textarea
             id="markdown"
@@ -75,7 +78,9 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
         </div>
 
         {formState.error && (
-          <div className="mb-4 text-red-500">{formState.error}</div>
+          <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+            {formState.error}
+          </div>
         )}
 
         <button
@@ -83,7 +88,7 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
           disabled={formState.isSubmitting}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {formState.isSubmitting ? 'Submitting...' : 'Create Slides'}
+          {formState.isSubmitting ? 'Creating Slides...' : 'Create Slides'}
         </button>
       </form>
     </div>

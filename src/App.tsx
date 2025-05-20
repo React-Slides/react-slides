@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import SlideDeck from './components/SlideDeck';
+import MarkdownForm from './components/MarkdownForm';
 
 const App: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   useEffect(() => {
     // Fetch the initial markdown content from the public folder
@@ -19,11 +21,36 @@ const App: React.FC = () => {
     fetchMarkdown();
   }, []);
 
+  const handleSubmit = (markdown: string): void => {
+    setMarkdownContent(markdown);
+    setIsEditing(false);
+  };
+
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white">
-      <div className="w-full max-w-6xl h-full">
-        <SlideDeck markdownContent={markdownContent} />
-      </div>
+    <div className="w-full min-h-screen bg-white">
+      {isEditing ? (
+        <div className="max-w-4xl mx-auto py-8 px-4">
+          <MarkdownForm onSubmit={handleSubmit} />
+          <button
+            onClick={() => setIsEditing(false)}
+            className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <div className="w-full h-screen flex flex-col">
+          <div className="flex-1 relative">
+            <SlideDeck markdownContent={markdownContent} />
+          </div>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="fixed bottom-4 left-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 z-20"
+          >
+            Edit Slides
+          </button>
+        </div>
+      )}
     </div>
   );
 };
