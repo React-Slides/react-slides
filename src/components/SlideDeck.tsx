@@ -36,7 +36,11 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
       <div className="flex-1 relative">
         {slides[currentSlide].map((block, index) => {
           if (block.type === 'markdown') {
-            return <MarkdownSlide key={index} content={block.content} isActive={true} />;
+            return <MarkdownSlide 
+                key={index} 
+                index={index}
+                content={block.content} 
+                isActive={true} />;
           }
           if (block.type === 'chart') {
             return <div key={index}>[ChartRenderer TODO]</div>; // Replace with <ChartRenderer config={block.config} />
