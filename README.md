@@ -103,6 +103,47 @@ import { Heart, Share, Twitter } from 'lucide-react';
 <Twitter color="blue" />
 ```
 
+## 📦 Enhanced Markdown Support
+
+You can now add special code blocks in your markdown to render interactive charts or animations directly in slides.
+
+### ✅ Supported Block Types
+
+#### 📊 `chart` block
+
+````markdown
+```chart
+type: bar
+title: Quarterly Sales
+data:
+  - label: Q1
+    value: 120
+  - label: Q2
+    value: 150
+  - label: Q3
+    value: 170
+  - label: Q4
+    value: 200
+````
+
+````
+
+#### ✨ `animate` block
+
+```markdown
+```animate
+type: fade-in
+````
+
+```
+
+You can include a chart or animation block alongside regular markdown in a single slide. Each slide supports **only one special block** for now (chart or animation) as part of the MVP.
+
+These blocks are parsed and rendered automatically inside the React Slides app.
+
+```
+
+
 ## Using Charts
 
 This project uses [Recharts](https://recharts.org/) for creating beautiful, responsive charts. You can create various types of charts in your slides:
