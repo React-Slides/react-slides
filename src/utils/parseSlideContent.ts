@@ -11,7 +11,7 @@ export type SlideBlock =
  * @param raw Markdown string for a single slide
  */
 export function parseSlideContent(raw: string): SlideBlock[] {
-  const codeBlockRegex = /```(chart|animate)\n([\s\S]*?)```/m;
+  const codeBlockRegex = /```(chart|animate)\s*\n([\s\S]*?)```/m;
   const match = raw.match(codeBlockRegex);
 
   if (match) {
@@ -24,16 +24,21 @@ export function parseSlideContent(raw: string): SlideBlock[] {
       console.warn(`Failed to parse ${blockType} block:`, e);
     }
 
-    // Remove code block from markdown
     const stripped = raw.replace(codeBlockRegex, '').trim();
 
-    return [
+    const parsedBlocks: SlideBlock[] = [
       { type: 'markdown', content: stripped },
       { type: blockType as 'chart' | 'animate', config }
     ];
+
+    console.log("Parsed Blocks:", parsedBlocks);
+    return parsedBlocks;
   }
 
-  // No special blocks found, just return as markdown
+  console.log("No match found, parsed markdown-only block:", [{ type: 'markdown', content: raw.trim() }]);
   return [{ type: 'markdown', content: raw.trim() }];
 }
+
+
+
 

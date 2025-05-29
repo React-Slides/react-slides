@@ -1,7 +1,8 @@
-// SlideDeck.tsx (excerpt)
+// SlideDeck.tsx (Fixed)
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
+import ChartRenderer from './ChartRenderer'
 import { SlideDeckProps } from '../types';
 import { parseSlideContent, SlideBlock } from '../utils/parseSlideContent';
 
@@ -12,6 +13,9 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
   useEffect(() => {
     if (markdownContent) {
       const rawSlides = markdownContent.split(/^---$/m);
+
+      console.log("raw slides just before being parsed, line 17 SlideDeck.tsx: ", rawSlides)
+
       const parsedSlides = rawSlides
         .map(slide => parseSlideContent(slide))
         .filter(blocks => blocks.length > 0);
@@ -31,36 +35,67 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
     return <div className="h-screen flex items-center justify-center text-2xl text-gray-600">Loading slides...</div>;
   }
 
+  const currentSlideBlocks = slides[currentSlide];
+  const markdownBlock = currentSlideBlocks.find(block => block.type === 'markdown');
+  const chartBlock = currentSlideBlocks.find(block => block.type === 'chart');
+  const animateBlock = currentSlideBlocks.find(block => block.type === 'animate');
+
   return (
     <div className="h-screen flex flex-col">
       <div className="flex-1 relative">
-        {slides[currentSlide].map((block, index) => {
-          if (block.type === 'markdown') {
-            return <MarkdownSlide 
-                key={index} 
-                index={index}
-                content={block.content} 
-                isActive={true} />;
-          }
-          if (block.type === 'chart') {
-            return <div key={index}>[ChartRenderer TODO]</div>; // Replace with <ChartRenderer config={block.config} />
-          }
-          if (block.type === 'animate') {
-            return <div key={index}>[AnimationWrapper TODO]</div>; // Replace with <AnimationWrapper config={block.config}>...</AnimationWrapper>
-          }
-          return null;
-        })}
+        {/* Single container for all slide content */}
+        <div className="absolute inset-0 p-8 flex flex-col justify-center">
+          <div className="max-w-4xl mx-auto w-full">
+            {/* Render markdown content if present */}
+            {markdownBlock && (
+              <div className="mb-8">
+                <MarkdownSlide 
+                  index={0}
+                  content={markdownBlock.content} 
+                  isActive={true}
+                />
+              </div>
+            )}
+            
+            {/* Render chart if present */}
+            {chartBlock && (
+              <div className="relative z-20">
+                <ChartRenderer config={chartBlock.config} />
+              </div>
+            )}
+            
+            {/* Render animation if present */}
+            {animateBlock && (
+              <div className="relative z-20">
+                <div>[AnimationWrapper TODO]</div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Navigation Buttons */}
-        <button onClick={prevSlide} disabled={currentSlide === 0} className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full z-30">
+        <button 
+          onClick={prevSlide} 
+          disabled={currentSlide === 0} 
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow-lg disabled:opacity-50 z-30"
+        >
           <ChevronLeft className="w-8 h-8" />
         </button>
-        <button onClick={nextSlide} disabled={currentSlide === slides.length - 1} className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full z-30">
+        <button 
+          onClick={nextSlide} 
+          disabled={currentSlide === slides.length - 1} 
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow-lg disabled:opacity-50 z-30"
+        >
           <ChevronRight className="w-8 h-8" />
         </button>
       </div>
+      
+      {/* Progress bar */}
       <div className="h-2 bg-gray-200">
-        <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }} />
+        <div 
+          className="h-full bg-blue-500 transition-all duration-300" 
+          style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }} 
+        />
       </div>
     </div>
   );
