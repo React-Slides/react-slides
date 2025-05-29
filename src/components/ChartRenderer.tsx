@@ -72,7 +72,7 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
               outerRadius={100}
               label
             >
-              {data.map((entry, index) => (
+              {data.map(( _ , index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
