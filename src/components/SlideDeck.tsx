@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer'
+import AnimationWrapper from './AnimationWrapper';
 import { SlideDeckProps } from '../types';
 import { parseSlideContent, SlideBlock } from '../utils/parseSlideContent';
 
@@ -67,7 +68,11 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
             {/* Render animation if present */}
             {animateBlock && (
               <div className="relative z-20">
-                <div>[AnimationWrapper TODO]</div>
+                <AnimationWrapper config={animateBlock.config}>
+                  <div className="text-center p-8">
+                    <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
+                  </div>
+                </AnimationWrapper>
               </div>
             )}
           </div>
