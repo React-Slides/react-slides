@@ -15,9 +15,9 @@ const AnimationWrapper: React.FC<AnimationWrapperProps> = ({ config, children })
   const getAnimationClasses = () => {
     switch (config.type) {
       case 'spin': 
-        return 'animate-spin'
+        return 'animate-spin';
       case 'ping':
-        return 'animate-ping'
+        return 'animate-ping';
       case 'bounce':
         return 'animate-bounce';
       case 'pulse':
