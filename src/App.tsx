@@ -26,6 +26,11 @@ const App: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleExportToPDF = (): void => {
+    // TODO Implement pdf ecport functionality
+    console.log('Export to pdf clicked');
+  }
+
   return (
     <div className="w-full min-h-screen bg-white">
       {isEditing ? (
@@ -43,12 +48,22 @@ const App: React.FC = () => {
           <div className="flex-1 relative">
             <SlideDeck markdownContent={markdownContent} />
           </div>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="fixed bottom-4 left-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 z-20"
-          >
-            Edit Slides
-          </button>
+          
+          {/* Button group in bottom-left */}
+          <div className="fixed bottom-4 left-4 flex gap-2 z-20">
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Edit Slides
+            </button>
+            <button
+              onClick={handleExportToPDF}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Export to PDF
+            </button>
+          </div>
         </div>
       )}
     </div>
