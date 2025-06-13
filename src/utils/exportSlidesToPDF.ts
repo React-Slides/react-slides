@@ -1,10 +1,28 @@
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-export const exportSlidesToPDF = async (): Promise<void> => {
+export const exportSlidesToPDF = async (markdownContent: string): Promise<void> => {
   try {
-    // Query all slide containers from the DOM
-    const slides = document.querySelectorAll('.slide-container');
+    // Create temporary container for PDF rendering
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.top = '0';
+    document.body.appendChild(tempContainer);
+
+    // Render PDFSlideDeck component
+    const { createRoot } = await import('react-dom/client');
+    const { default: PDFSlideDeck } = await import('../components/PDFSlideDeck');
+    const { createElement } = await import('react');
+    
+    const root = createRoot(tempContainer);
+    root.render(createElement(PDFSlideDeck, { markdownContent }));
+
+    // Wait for rendering to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Query all slide containers from the rendered component
+    const slides = tempContainer.querySelectorAll('.slide-container');
     
     if (slides.length === 0) {
       console.warn('No slides found with .slide-container class');
@@ -20,7 +38,7 @@ export const exportSlidesToPDF = async (): Promise<void> => {
       // Capture slide as canvas image
       const canvas = await html2canvas(slideElement, {
         backgroundColor: '#ffffff',
-        scale: 3, // Highest quality, 3 of 3-2-1
+        scale: 2, // Higher quality
         useCORS: true, // Handle cross-origin images
         allowTaint: false
       });
@@ -49,6 +67,10 @@ export const exportSlidesToPDF = async (): Promise<void> => {
     pdf.save(filename);
     
     console.log(`PDF exported successfully: ${filename}`);
+    
+    // Cleanup: remove temporary container
+    root.unmount();
+    document.body.removeChild(tempContainer);
   } catch (error) {
     console.error('Error exporting slides to PDF:', error);
     throw error;

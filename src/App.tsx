@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SlideDeck from './components/SlideDeck';
 import MarkdownForm from './components/MarkdownForm';
+import { exportSlidesToPDF } from './utils/exportSlidesToPDF';
 
 const App: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined);
@@ -27,9 +28,10 @@ const App: React.FC = () => {
   };
 
   const handleExportToPDF = (): void => {
-    // TODO Implement pdf ecport functionality
-    console.log('Export to pdf clicked');
-  }
+    if (markdownContent) {
+      exportSlidesToPDF(markdownContent).catch(console.error);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen bg-white">
