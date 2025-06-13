@@ -24,7 +24,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/html2canvas": "^0.5.35",
+    "@types/html2canvas": "^1.0.0",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.17.49",
     "@types/react": "^18.3.21",
