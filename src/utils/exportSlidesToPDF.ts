@@ -38,13 +38,16 @@ export const exportSlidesToPDF = async (markdownContent: string): Promise<void> 
       // Capture slide as canvas image
       const canvas = await html2canvas(slideElement, {
         backgroundColor: '#ffffff',
-        scale: 2, // Higher quality
+        scale: 1, // Higher quality
         useCORS: true, // Handle cross-origin images
         allowTaint: false
       });
       
       // Convert canvas to image data
-      const imgData = canvas.toDataURL('image/png');
+    // 25:100:250mb, scale 1:2:3, for 9 slides, png is high resolution
+    //   const imgData = canvas.toDataURL('image/png');
+
+    const imgData = canvas.toDataURL('image/jpeg', 0.8);
       
       // Calculate dimensions to fit PDF page
       const imgWidth = pdf.internal.pageSize.getWidth();
