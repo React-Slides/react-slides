@@ -1,94 +1,63 @@
 # React Slides 🎯
 
-A modern, markdown-driven slide deck presentation tool built with React and Vite. This tool allows you to create beautiful presentations using simple markdown syntax.
+A modern, markdown-driven slide deck presentation tool built with React and Vite, allowing you to create beautiful presentations using simple markdown syntax.
 
 ## Features
 
-- Create slides using Markdown syntax
-- Separate slides using `---` delimiter
-- Support for GitHub Flavored Markdown
-- Responsive design
-- Built with React and Vite
-- Styled with Tailwind CSS
-- Beautiful icons powered by Lucide React
-- Interactive charts powered by Recharts
-- Support for math equations (KaTeX)
-- Syntax highlighting for code blocks
+* Markdown-based slide creation
+* Slide separation using `---`
+* GitHub Flavored Markdown support
+* Responsive design
+* React and Vite powered
+* Tailwind CSS styling
+* Beautiful icons powered by Lucide React
+* Interactive charts powered by Recharts
+* Math equations support (KaTeX)
+* Syntax highlighting for code blocks
+* PDF export functionality
+* Emoji support in markdown
 
-## Using Emojis in Slides ✨
-
-Enhance your slides with emojis! Simply add them to your markdown content. Here are some useful emojis for presentations:
-
-### Common Use Cases
-- 🎯 Section titles/targets
-- 🚀 Features/launches
-- 💡 Ideas/tips
-- 📈 Trends/growth
-- 💻 Code examples
-- 📊 Charts/data
-- 🛠️ Setup/installation
-- 📝 Notes/documentation
-- ⚡ Performance/speed
-- 🔍 Details/search
-- 🎨 Design/styling
-- 🔧 Configuration
-- �� Interactivity
-- 🌟 Highlights
-- 🎉 Celebrations/completion
-
-### How to Use
-Simply copy and paste emojis into your markdown:
-```markdown
-# Welcome to My Presentation 🎯
-
-## Key Features 🚀
-
-## Code Example 💻
-```
+---
 
 ## Getting Started
 
-1. Clone the repository:
+### Installation
 
 ```bash
 git clone https://github.com/your-username/react-slides.git
 cd react-slides
-```
-
-2. Install dependencies:
-
-```bash
 npm install
-```
-
-3. Start the development server:
-
-```bash
 npm run dev
 ```
 
+---
+
 ## Creating Slides
 
-Create your slides in the `content.md` file using markdown syntax. Separate each slide with `---`.
+Slides can be created directly using markdown syntax in the `MarkDownForm` component. Separate slides with `---`.
 
 Example:
-```markdown
-# First Slide
-This is my first slide
+
+````markdown
+# Slide Title 🎯
+Slide content here.
 
 ---
 
-## Second Slide
-- Bullet point 1
-- Bullet point 2
+## Another Slide 🚀
+- Bullet 1
+- Bullet 2
 
 ---
 
-### Code Example
+### Code Example 💻
 ```js
 console.log('Hello, World!');
-```
-```
+````
+
+````
+
+---
 
 ## Using Icons
 
@@ -101,11 +70,13 @@ import { Heart, Share, Twitter } from 'lucide-react';
 <Heart className="w-6 h-6" />
 <Share size={24} />
 <Twitter color="blue" />
-```
+````
+
+---
 
 ## 📦 Enhanced Markdown Support
 
-You can now add special code blocks in your markdown to render interactive charts or animations directly in slides.
+You can add special code blocks in markdown to render interactive charts or animations directly in slides.
 
 ### ✅ Supported Block Types
 
@@ -135,19 +106,19 @@ data:
 type: fade-in
 ````
 
-```
+````
 
-You can include a chart or animation block alongside regular markdown in a single slide. Each slide supports **only one special block** for now (chart or animation) as part of the MVP.
+**Note:** Only one special block (`chart` or `animate`) per slide as part of the MVP.
 
 These blocks are parsed and rendered automatically inside the React Slides app.
 
-```
-
+---
 
 ## Using Charts
 
-This project uses [Recharts](https://recharts.org/) for creating beautiful, responsive charts. You can create various types of charts in your slides:
+This project uses [Recharts](https://recharts.org/) for creating beautiful, responsive charts. You can create various types of charts in your slides.
 
+Example:
 ```jsx
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
@@ -166,9 +137,81 @@ const data = [
   <Tooltip />
   <Line type="monotone" dataKey="value" stroke="#8884d8" />
 </LineChart>
+````
+
+---
+
+## Supported Chart Types
+
+* **Bar Charts:** `type: bar`
+* **Line Charts:** `type: line`
+* **Pie Charts:** `type: pie`
+
+---
+
+## Supported Animations
+
+Currently supports: `fade-in`, `slide-up`, `bounce`, `spin`, `ping`, `pulse`
+
+---
+
+## Using Emojis in Slides ✨
+
+Enhance your slides with emojis! Simply add them to your markdown content.
+
+### Common Use Cases
+
+* 🎯 Section titles/targets
+* 🚀 Features/launches
+* 💡 Ideas/tips
+* 📈 Trends/growth
+* 💻 Code examples
+* 📊 Charts/data
+* 🛠️ Setup/installation
+* 📝 Notes/documentation
+* ⚡ Performance/speed
+* 🔍 Details/search
+* 🎨 Design/styling
+* 🔧 Configuration
+* 🌟 Highlights
+* 🎉 Celebrations/completion
+
+Example:
+
+```markdown
+# Welcome 🎯
+## Features 🚀
 ```
 
-## Deployment
+---
 
-To build for production:
-```
+## PDF Export
+
+Click the "Export to PDF" button (next to "Edit Slides") to download your presentation.
+
+* Optimized JPEG compression (quality: 0.8)
+* Typical file sizes: 315KB-1.5MB depending on content
+* Export time: \~2-5 seconds for standard presentations
+* Ensures compatibility across browsers
+
+---
+
+## Known Issues 🐛
+
+### React DevTools Circular Structure
+
+**Development-only** console errors when using React DevTools with chart components.
+
+* ✅ **Does not affect:** App functionality, user experience, production builds
+* 🔧 **Temporary fix:** Disable React DevTools extension
+
+---
+
+## Browser Compatibility
+
+Verified functional in:
+
+* Chrome
+* Firefox
+* Safari
+* Edge

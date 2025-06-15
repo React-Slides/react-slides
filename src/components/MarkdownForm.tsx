@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MarkdownFormState } from '../types';
 import MetaPrompt from './MetaPrompt';
+import { EXAMPLE_MARKDOWN } from 'src/constants/exampleMarkdown';
 
 interface MarkdownFormProps {
   onSubmit: (markdown: string) => void;
@@ -8,7 +9,7 @@ interface MarkdownFormProps {
 
 const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
   const [formState, setFormState] = useState<MarkdownFormState>({
-    markdown: '',
+    markdown: EXAMPLE_MARKDOWN,
     isSubmitting: false,
     error: null
   });
