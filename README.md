@@ -315,3 +315,13 @@ duration: 1s
 | Population 1800 CE      | Not explicit                                     | ~1B                                  | Matches scholarly consensus                    |
 | Scientific Revolution   | ~1543 CE (Copernicus)                            | Mid-1500s                            | Matches scholarly consensus                    |
 ````
+## Known Issues 🐛
+
+### React DevTools Console Errors
+When developing with React DevTools enabled, you may see circular structure JSON errors in the console when interacting with charts. **This is a React DevTools visualization issue, not a functional problem.**
+
+- ✅ **Does not affect:** App functionality, user experience, or production builds
+- ⚠️ **Does affect:** Console cleanliness during development  
+- 🔧 **Status:** Documented cosmetic issue - no fix planned
+
+To verify it's DevTools-related: temporarily disable React DevTools extension → errors disappear.

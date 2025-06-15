@@ -38,7 +38,7 @@ export const exportSlidesToPDF = async (markdownContent: string): Promise<void> 
       // Capture slide as canvas image
       const canvas = await html2canvas(slideElement, {
         backgroundColor: '#ffffff',
-        scale: 1, // Higher quality
+        scale: 3, // Higher quality
         useCORS: true, // Handle cross-origin images
         allowTaint: false
       });

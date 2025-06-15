@@ -2,7 +2,7 @@ import React from 'react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
-import { parseSlideContent, SlideBlock } from '../utils/parseSlideContent';
+import { parseSlideContent } from '../utils/parseSlideContent';
 
 interface PDFSlideDeckProps {
   markdownContent: string;
