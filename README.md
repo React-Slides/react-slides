@@ -194,6 +194,9 @@ Click the "Export to PDF" button (next to "Edit Slides") to download your presen
 * Export time: \~2-5 seconds for standard presentations
 * Ensures compatibility across browsers
 
+**[📚 PDF Export Feature Design Documentation](https://docs.google.com/document/d/1QT3zSlPfKJpMs9uOn9FKl67sU8j7XEB8POLNgI-wV3A/edit?usp=sharing)**  
+For detailed technical insights, design decisions, and future enhancements.
+
 ---
 
 ## Known Issues 🐛
