@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import SlideDeck from './components/SlideDeck';
 import MarkdownForm from './components/MarkdownForm';
 import { exportSlidesToPDF } from './utils/exportSlidesToPDF';
+import { exportSlidesToPPTX } from './utils/exportSlidesToPPTX';
 
 const App: React.FC = () => {
   const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [isExportingPPTX, setIsExportingPPTX] = useState<boolean>(false);
 
   useEffect(() => {
     // Fetch the initial markdown content from the public folder
@@ -47,6 +49,23 @@ const App: React.FC = () => {
     }
   };
 
+  const handleExportPPTX = async (): Promise<void> => {
+    if (!markdownContent) {
+      console.warn('No content available for export');
+      return;
+    }
+
+    setIsExportingPPTX(true);
+    try {
+      await exportSlidesToPPTX(markdownContent);
+      console.log('PPTX export completed successfully');
+    } catch (error) {
+      console.error('Export failed:', error instanceof Error ? error.message : 'Unknown error');
+    } finally {
+      setIsExportingPPTX(false);
+    }
+  };
+
   return (
     <div className="w-full min-h-screen bg-white">
       {isEditing ? (
@@ -80,6 +99,15 @@ const App: React.FC = () => {
             className="fixed bottom-4 left-32 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed z-20"
           >
             {isExporting ? 'Exporting...' : 'Export PDF'}
+          </button>
+
+          {/* Export PPTX button */}
+          <button
+            onClick={handleExportPPTX}
+            disabled={isExportingPPTX || !markdownContent}
+            className="fixed bottom-4 left-64 px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed z-20"
+          >
+            {isExportingPPTX ? 'Exporting...' : 'Export PPTX'}
           </button>
         </div>
       )}
