@@ -1,12 +1,20 @@
 import html2canvas from 'html2canvas';
 import PptxGenJS from 'pptxgenjs';
+import { ThemeName, getTheme } from './themes';
 
 /**
  * Export slides to PPTX using image-based approach (same as PDF export)
  * Captures each slide as rendered in browser for visual fidelity
  */
-export const exportSlidesToPPTX = async (markdownContent: string): Promise<void> => {
+export const exportSlidesToPPTX = async (
+  markdownContent: string,
+  theme: ThemeName = 'light'
+): Promise<void> => {
   try {
+    // Get theme colors for background
+    const themeColors = getTheme(theme);
+    const bgColor = themeColors['--slide-bg'];
+
     // Create temporary container for rendering
     const tempContainer = document.createElement('div');
     tempContainer.style.position = 'absolute';
@@ -14,13 +22,13 @@ export const exportSlidesToPPTX = async (markdownContent: string): Promise<void>
     tempContainer.style.top = '0';
     document.body.appendChild(tempContainer);
 
-    // Render PDFSlideDeck component (reuse for consistent rendering)
+    // Render PDFSlideDeck component with theme (reuse for consistent rendering)
     const { createRoot } = await import('react-dom/client');
     const { default: PDFSlideDeck } = await import('../components/PDFSlideDeck');
     const { createElement } = await import('react');
 
     const root = createRoot(tempContainer);
-    root.render(createElement(PDFSlideDeck, { markdownContent }));
+    root.render(createElement(PDFSlideDeck, { markdownContent, theme }));
 
     // Wait for rendering to complete (charts need time to render)
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -44,9 +52,9 @@ export const exportSlidesToPPTX = async (markdownContent: string): Promise<void>
     for (let i = 0; i < slides.length; i++) {
       const slideElement = slides[i] as HTMLElement;
 
-      // Capture slide as canvas image (high quality)
+      // Capture slide as canvas image with theme background
       const canvas = await html2canvas(slideElement, {
-        backgroundColor: '#ffffff',
+        backgroundColor: bgColor,
         scale: 2, // Good balance of quality vs file size
         useCORS: true,
         allowTaint: false

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { MarkdownFormState } from '../types';
 import MetaPrompt from './MetaPrompt';
 import { EXAMPLE_MARKDOWN } from 'src/constants/exampleMarkdown';
+import { themeButtons, ThemeName } from '../utils/themes';
+import { injectTheme } from '../utils/parseFrontmatter';
 
 interface MarkdownFormProps {
   onSubmit: (markdown: string) => void;
@@ -21,9 +23,7 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    
+  const handleThemeClick = (themeName: ThemeName): void => {
     if (!formState.markdown.trim()) {
       setFormState({
         ...formState,
@@ -39,20 +39,24 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
     });
 
     try {
-      // Call the onSubmit callback with the markdown content
-      onSubmit(formState.markdown);
+      // Inject theme into frontmatter and update textarea
+      const updatedMarkdown = injectTheme(formState.markdown, themeName);
 
-      // Reset error state
+      // Update the textarea to show the frontmatter
       setFormState({
         ...formState,
+        markdown: updatedMarkdown,
         isSubmitting: false,
         error: null
       });
+
+      // Submit the markdown with theme
+      onSubmit(updatedMarkdown);
     } catch (error) {
       setFormState({
         ...formState,
         isSubmitting: false,
-        error: 'Failed to submit markdown content'
+        error: 'Failed to create slides'
       });
     }
   };
@@ -60,10 +64,10 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold mb-6">Create Slides from Markdown</h2>
-      
+
       <MetaPrompt />
-      
-      <form onSubmit={handleSubmit}>
+
+      <div>
         <div className="mb-4">
           <label htmlFor="markdown" className="block mb-2 text-gray-700 font-medium">
             Paste your markdown content below:
@@ -71,7 +75,7 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
           <textarea
             id="markdown"
             rows={12}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
             value={formState.markdown}
             onChange={handleChange}
             placeholder="# Slide Title\n\nContent goes here\n\n---\n\n# Next Slide\n\nMore content..."
@@ -84,14 +88,36 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={formState.isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-        >
-          {formState.isSubmitting ? 'Creating Slides...' : 'Create Slides'}
-        </button>
-      </form>
+        {/* Theme selection buttons */}
+        <div className="mb-2">
+          <label className="block mb-2 text-gray-700 font-medium">
+            Create Slides:
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {themeButtons.map((theme) => (
+              <button
+                key={theme.name}
+                type="button"
+                onClick={() => handleThemeClick(theme.name)}
+                disabled={formState.isSubmitting}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+                title={`Create slides with ${theme.label} theme`}
+              >
+                {/* Color swatch */}
+                <span
+                  className="w-4 h-4 rounded border border-gray-400"
+                  style={{ backgroundColor: theme.color }}
+                />
+                <span className="text-gray-700">{theme.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {formState.isSubmitting && (
+          <div className="mt-2 text-gray-600">Creating slides...</div>
+        )}
+      </div>
     </div>
   );
 };
