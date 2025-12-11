@@ -32,6 +32,17 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
     if (currentSlide > 0) setCurrentSlide(prev => prev - 1);
   }, [currentSlide]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [nextSlide, prevSlide]);
+
   if (slides.length === 0) {
     return <div className="h-screen flex items-center justify-center text-2xl text-gray-600">Loading slides...</div>;
   }
