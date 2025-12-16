@@ -1,22 +1,23 @@
-// SlideDeck.tsx (Fixed)
+// SlideDeck.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
-import ChartRenderer from './ChartRenderer'
+import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import { SlideDeckProps } from '../types';
 import { parseSlideContent, SlideBlock } from '../utils/parseSlideContent';
+import { getTheme } from '../utils/themes';
 
-const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
+const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slides, setSlides] = useState<SlideBlock[][]>([]);
+
+  // Get theme styles as CSS variables
+  const themeStyles = getTheme(theme);
 
   useEffect(() => {
     if (markdownContent) {
       const rawSlides = markdownContent.split(/^---$/m);
-
-      console.log("raw slides just before being parsed, line 17 SlideDeck.tsx: ", rawSlides)
-
       const parsedSlides = rawSlides
         .map(slide => parseSlideContent(slide))
         .filter(blocks => blocks.length > 0);
@@ -44,7 +45,18 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
   }, [nextSlide, prevSlide]);
 
   if (slides.length === 0) {
-    return <div className="h-screen flex items-center justify-center text-2xl text-gray-600">Loading slides...</div>;
+    return (
+      <div
+        className="h-screen flex items-center justify-center text-2xl"
+        style={{
+          ...themeStyles,
+          backgroundColor: 'var(--slide-bg)',
+          color: 'var(--slide-text)',
+        } as React.CSSProperties}
+      >
+        Loading slides...
+      </div>
+    );
   }
 
   const currentSlideBlocks = slides[currentSlide];
@@ -53,7 +65,14 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
   const animateBlock = currentSlideBlocks.find(block => block.type === 'animate');
 
   return (
-    <div className="h-screen flex flex-col">
+    <div
+      className="h-screen flex flex-col"
+      style={{
+        ...themeStyles,
+        backgroundColor: 'var(--slide-bg)',
+        color: 'var(--slide-text)',
+      } as React.CSSProperties}
+    >
       <div className="flex-1 relative">
         {/* Single container for all slide content */}
         <div className="absolute inset-0 p-8 flex flex-col justify-center">
@@ -61,21 +80,21 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
             {/* Render markdown content if present */}
             {markdownBlock && (
               <div className="mb-8">
-                <MarkdownSlide 
+                <MarkdownSlide
                   index={0}
-                  content={markdownBlock.content} 
+                  content={markdownBlock.content}
                   isActive={true}
                 />
               </div>
             )}
-            
+
             {/* Render chart if present */}
             {chartBlock && (
               <div className="relative z-20">
                 <ChartRenderer config={chartBlock.config} />
               </div>
             )}
-            
+
             {/* Render animation if present */}
             {animateBlock && (
               <div className="relative z-20">
@@ -90,27 +109,30 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent }) => {
         </div>
 
         {/* Navigation Buttons */}
-        <button 
-          onClick={prevSlide} 
-          disabled={currentSlide === 0} 
+        <button
+          onClick={prevSlide}
+          disabled={currentSlide === 0}
           className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow-lg disabled:opacity-50 z-30"
         >
-          <ChevronLeft className="w-8 h-8" />
+          <ChevronLeft className="w-8 h-8 text-gray-800" />
         </button>
-        <button 
-          onClick={nextSlide} 
-          disabled={currentSlide === slides.length - 1} 
+        <button
+          onClick={nextSlide}
+          disabled={currentSlide === slides.length - 1}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white/80 hover:bg-white shadow-lg disabled:opacity-50 z-30"
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="w-8 h-8 text-gray-800" />
         </button>
       </div>
-      
+
       {/* Progress bar */}
       <div className="h-2 bg-gray-200">
-        <div 
-          className="h-full bg-blue-500 transition-all duration-300" 
-          style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }} 
+        <div
+          className="h-full transition-all duration-300"
+          style={{
+            width: `${((currentSlide + 1) / slides.length) * 100}%`,
+            backgroundColor: 'var(--slide-accent)',
+          }}
         />
       </div>
     </div>

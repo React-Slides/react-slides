@@ -3,12 +3,17 @@ import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import { parseSlideContent } from '../utils/parseSlideContent';
+import { getTheme, ThemeName } from '../utils/themes';
 
 interface PDFSlideDeckProps {
   markdownContent: string;
+  theme?: ThemeName;
 }
 
-const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent }) => {
+const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
+  // Get theme styles as CSS variables
+  const themeStyles = getTheme(theme);
+
   // Parse all slides at once for PDF export
   const rawSlides = markdownContent.split(/^---$/m);
   const slides = rawSlides
@@ -23,37 +28,40 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent }) => {
         const animateBlock = slideBlocks.find(block => block.type === 'animate');
 
         return (
-          <div 
+          <div
             key={index}
-            className="slide-container p-8 bg-white"
+            className="slide-container p-8"
             style={{
+              ...themeStyles,
               width: '1024px',
               height: '768px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              pageBreakAfter: 'always'
-            }}
+              pageBreakAfter: 'always',
+              backgroundColor: 'var(--slide-bg)',
+              color: 'var(--slide-text)',
+            } as React.CSSProperties}
           >
             <div className="max-w-4xl mx-auto w-full">
               {/* Render markdown content */}
               {markdownBlock && (
                 <div className="mb-8">
-                  <MarkdownSlide 
+                  <MarkdownSlide
                     index={index}
-                    content={markdownBlock.content} 
+                    content={markdownBlock.content}
                     isActive={true}
                   />
                 </div>
               )}
-              
+
               {/* Render chart in final state */}
               {chartBlock && (
                 <div className="relative">
                   <ChartRenderer config={chartBlock.config} />
                 </div>
               )}
-              
+
               {/* Render animation in final state (static) */}
               {animateBlock && (
                 <div className="relative">

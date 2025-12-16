@@ -14,6 +14,7 @@ export interface MarkdownSlideProps {
 // Props for the SlideDeck component
 export interface SlideDeckProps {
   markdownContent?: string;
+  theme?: 'light' | 'dark' | 'corporate' | 'warm' | 'nature' | 'highcontrast';
 }
 
 // Form state for markdown input

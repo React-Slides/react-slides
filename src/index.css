@@ -9,6 +9,19 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  /* Default theme CSS variables (light theme) */
+  --slide-bg: #ffffff;
+  --slide-text: #1a1a1a;
+  --slide-accent: #3b82f6;
+  --slide-muted: #6b7280;
+
+  /* Default chart colors (Okabe-Ito colorblind-safe palette) */
+  --chart-1: #0072B2;
+  --chart-2: #E69F00;
+  --chart-3: #009E73;
+  --chart-4: #CC79A7;
+  --chart-5: #56B4E9;
 }
 
 /* Base body styles */
@@ -17,4 +30,16 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-} 
+}
+
+/* Theme-aware prose styling for markdown content */
+.prose {
+  --tw-prose-body: var(--slide-text);
+  --tw-prose-headings: var(--slide-text);
+  --tw-prose-links: var(--slide-accent);
+  --tw-prose-bold: var(--slide-text);
+  --tw-prose-counters: var(--slide-muted);
+  --tw-prose-bullets: var(--slide-muted);
+  --tw-prose-quotes: var(--slide-text);
+  --tw-prose-code: var(--slide-text);
+}

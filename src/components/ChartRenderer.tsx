@@ -1,5 +1,5 @@
 // src/components/ChartRenderer.tsx
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   BarChart, Bar,
   LineChart, Line,
@@ -27,10 +27,28 @@ interface ChartRendererProps {
   config: ChartConfig;
 }
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#87cefa'];
+// Default colors (Okabe-Ito colorblind-safe palette)
+const DEFAULT_COLORS = ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#56B4E9'];
 
 const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
-  console.log("Chart config received:", config);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [colors, setColors] = useState<string[]>(DEFAULT_COLORS);
+
+  // Get chart colors from CSS variables when component mounts
+  useEffect(() => {
+    if (containerRef.current) {
+      const styles = getComputedStyle(containerRef.current);
+      const chartColors = [
+        styles.getPropertyValue('--chart-1').trim(),
+        styles.getPropertyValue('--chart-2').trim(),
+        styles.getPropertyValue('--chart-3').trim(),
+        styles.getPropertyValue('--chart-4').trim(),
+        styles.getPropertyValue('--chart-5').trim(),
+      ].map((color, index) => color || DEFAULT_COLORS[index]);
+
+      setColors(chartColors);
+    }
+  }, []);
 
   const { type, title, data } = config;
 
@@ -43,10 +61,10 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
             <XAxis dataKey="label" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="value" fill="#8884d8" />
+            <Bar dataKey="value" fill={colors[0]} />
           </BarChart>
         );
-      
+
       case 'line':
         return (
           <LineChart data={data}>
@@ -54,10 +72,10 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
             <XAxis dataKey="label" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="value" stroke="#82ca9d" strokeWidth={2} />
+            <Line type="monotone" dataKey="value" stroke={colors[1]} strokeWidth={2} />
           </LineChart>
         );
-      
+
       case 'pie':
         return (
           <PieChart>
@@ -72,22 +90,31 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
               outerRadius={100}
               label
             >
-              {data.map(( _ , index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              {data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
               ))}
             </Pie>
           </PieChart>
         );
-      
+
       default:
         return <div>Unsupported chart type: {type}</div>;
     }
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border p-6">
+    <div
+      ref={containerRef}
+      className="w-full rounded-lg shadow-sm border p-6"
+      style={{
+        backgroundColor: 'var(--slide-bg, #ffffff)',
+      }}
+    >
       {title && (
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        <h2
+          className="text-2xl font-bold mb-6 text-center"
+          style={{ color: 'var(--slide-text, #1a1a1a)' }}
+        >
           {title}
         </h2>
       )}
