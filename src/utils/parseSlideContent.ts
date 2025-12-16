@@ -6,13 +6,41 @@ export type SlideBlock =
   | { type: 'chart'; config: any }
   | { type: 'animate'; config: any };
 
+export interface ParsedSlide {
+  blocks: SlideBlock[];
+  notes?: string;
+}
+
+/**
+ * Extracts speaker notes from slide content.
+ * Notes are defined using HTML comment syntax: <!--notes ... -->
+ * @param content Raw slide content
+ * @returns Object with content (notes removed) and extracted notes
+ */
+function extractNotes(content: string): { content: string; notes?: string } {
+  // Match <!--notes ... --> pattern (case-insensitive, multiline)
+  const notesRegex = /<!--\s*notes\s*\n([\s\S]*?)-->/i;
+  const match = content.match(notesRegex);
+
+  if (match) {
+    const notes = match[1].trim();
+    const contentWithoutNotes = content.replace(notesRegex, '').trim();
+    return { content: contentWithoutNotes, notes };
+  }
+
+  return { content };
+}
+
 /**
  * Parses a single slide's raw markdown content into structured blocks.
  * @param raw Markdown string for a single slide
  */
-export function parseSlideContent(raw: string): SlideBlock[] {
+export function parseSlideContent(raw: string): ParsedSlide {
+  // First extract speaker notes
+  const { content: contentWithoutNotes, notes } = extractNotes(raw);
+
   const codeBlockRegex = /```(chart|animate)\s*\n([\s\S]*?)```/m;
-  const match = raw.match(codeBlockRegex);
+  const match = contentWithoutNotes.match(codeBlockRegex);
 
   if (match) {
     const [, blockType, blockBody] = match;
@@ -24,7 +52,7 @@ export function parseSlideContent(raw: string): SlideBlock[] {
       console.warn(`Failed to parse ${blockType} block:`, e);
     }
 
-    const stripped = raw.replace(codeBlockRegex, '').trim();
+    const stripped = contentWithoutNotes.replace(codeBlockRegex, '').trim();
 
     const parsedBlocks: SlideBlock[] = [
       { type: 'markdown', content: stripped },
@@ -32,11 +60,11 @@ export function parseSlideContent(raw: string): SlideBlock[] {
     ];
 
     console.log("Parsed Blocks:", parsedBlocks);
-    return parsedBlocks;
+    return { blocks: parsedBlocks, notes };
   }
 
-  console.log("No match found, parsed markdown-only block:", [{ type: 'markdown', content: raw.trim() }]);
-  return [{ type: 'markdown', content: raw.trim() }];
+  console.log("No match found, parsed markdown-only block:", [{ type: 'markdown', content: contentWithoutNotes.trim() }]);
+  return { blocks: [{ type: 'markdown', content: contentWithoutNotes.trim() }], notes };
 }
 
 

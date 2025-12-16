@@ -1,20 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FileText } from 'lucide-react';
 import { MarkdownFormState } from '../types';
 import MetaPrompt from './MetaPrompt';
+import TemplatePicker from './TemplatePicker';
 import { EXAMPLE_MARKDOWN } from 'src/constants/exampleMarkdown';
 import { themeButtons, ThemeName } from '../utils/themes';
 import { injectTheme } from '../utils/parseFrontmatter';
 
 interface MarkdownFormProps {
   onSubmit: (markdown: string) => void;
+  initialContent?: string;
+  onReset?: () => void;
 }
 
-const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
+const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit, initialContent, onReset }) => {
   const [formState, setFormState] = useState<MarkdownFormState>({
-    markdown: EXAMPLE_MARKDOWN,
+    markdown: initialContent || EXAMPLE_MARKDOWN,
     isSubmitting: false,
     error: null
   });
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+
+  // Sync form state when initialContent changes (e.g., after reset)
+  useEffect(() => {
+    if (initialContent !== undefined) {
+      setFormState(prev => ({
+        ...prev,
+        markdown: initialContent
+      }));
+    }
+  }, [initialContent]);
+
+  const handleTemplateSelect = (content: string) => {
+    setFormState(prev => ({
+      ...prev,
+      markdown: content,
+      error: null
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setFormState({
@@ -68,6 +91,21 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
       <MetaPrompt />
 
       <div>
+        {/* Template Picker Button */}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setShowTemplatePicker(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+          >
+            <FileText className="w-5 h-5" />
+            Choose a Template
+          </button>
+          <span className="ml-3 text-sm text-gray-500">
+            or paste your own markdown below
+          </span>
+        </div>
+
         <div className="mb-4">
           <label htmlFor="markdown" className="block mb-2 text-gray-700 font-medium">
             Paste your markdown content below:
@@ -117,7 +155,27 @@ const MarkdownForm: React.FC<MarkdownFormProps> = ({ onSubmit }) => {
         {formState.isSubmitting && (
           <div className="mt-2 text-gray-600">Creating slides...</div>
         )}
+
+        {onReset && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onReset}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+            >
+              Reset to Default Content
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Template Picker Modal */}
+      {showTemplatePicker && (
+        <TemplatePicker
+          onSelectTemplate={handleTemplateSelect}
+          onClose={() => setShowTemplatePicker(false)}
+        />
+      )}
     </div>
   );
 };

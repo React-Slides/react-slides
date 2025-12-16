@@ -1,0 +1,35 @@
+// React Slides Library Entry Point
+// Export main components
+export { default as SlideDeck } from './components/SlideDeck';
+export { default as PDFSlideDeck } from './components/PDFSlideDeck';
+export { default as MarkdownSlide } from './components/MarkdownSlide';
+export { default as ChartRenderer } from './components/ChartRenderer';
+export { default as AnimationWrapper } from './components/AnimationWrapper';
+export { default as MarkdownForm } from './components/MarkdownForm';
+export { default as TemplatePicker } from './components/TemplatePicker';
+
+// Export utility functions
+export { parseSlideContent } from './utils/parseSlideContent';
+export { parseFrontmatter, injectTheme } from './utils/parseFrontmatter';
+export { exportSlidesToPDF } from './utils/exportSlidesToPDF';
+export { exportSlidesToPPTX } from './utils/exportSlidesToPPTX';
+export { getTheme, themeButtons } from './utils/themes';
+
+// Export templates
+export { TEMPLATES, getTemplateById, getTemplatesByCategory } from './constants/templates';
+export { EXAMPLE_MARKDOWN } from './constants/exampleMarkdown';
+
+// Export types
+export type {
+  MarkdownSlide as MarkdownSlideType,
+  MarkdownSlideProps,
+  SlideDeckProps,
+  MarkdownFormState,
+  SubmissionResponse,
+  ToastType,
+  Toast,
+} from './types';
+
+export type { Template } from './constants/templates';
+export type { ThemeName } from './utils/themes';
+export type { ParsedSlide, SlideBlock } from './utils/parseSlideContent';

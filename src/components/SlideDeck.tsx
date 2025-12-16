@@ -5,12 +5,12 @@ import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import { SlideDeckProps } from '../types';
-import { parseSlideContent, SlideBlock } from '../utils/parseSlideContent';
+import { parseSlideContent, ParsedSlide } from '../utils/parseSlideContent';
 import { getTheme } from '../utils/themes';
 
 const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const [slides, setSlides] = useState<SlideBlock[][]>([]);
+  const [slides, setSlides] = useState<ParsedSlide[]>([]);
 
   // Get theme styles as CSS variables
   const themeStyles = getTheme(theme);
@@ -20,7 +20,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
       const rawSlides = markdownContent.split(/^---$/m);
       const parsedSlides = rawSlides
         .map(slide => parseSlideContent(slide))
-        .filter(blocks => blocks.length > 0);
+        .filter(parsed => parsed.blocks.length > 0);
       setSlides(parsedSlides);
     }
   }, [markdownContent]);
@@ -59,10 +59,12 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
     );
   }
 
-  const currentSlideBlocks = slides[currentSlide];
+  const currentParsedSlide = slides[currentSlide];
+  const currentSlideBlocks = currentParsedSlide.blocks;
   const markdownBlock = currentSlideBlocks.find(block => block.type === 'markdown');
   const chartBlock = currentSlideBlocks.find(block => block.type === 'chart');
   const animateBlock = currentSlideBlocks.find(block => block.type === 'animate');
+  // Notes are stored in currentParsedSlide.notes but not rendered in normal view
 
   return (
     <div

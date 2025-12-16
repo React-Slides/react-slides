@@ -1,9 +1,30 @@
 {
-  "name": "react-slides",
+  "name": "@str-ventures/react-slides",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "license": "MIT",
+  "description": "A markdown-driven presentation tool for creating interactive slide decks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/STR-Ventures/react-slides.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "main": "dist/react-slides.umd.cjs",
+  "module": "dist/react-slides.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-slides.js",
+      "require": "./dist/react-slides.umd.cjs"
+    }
+  },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
     "html2canvas": "^1.4.1",
@@ -21,9 +42,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:lib": "tsc && vite build --config vite.config.lib.ts",
+    "build:demo": "tsc && vite build --config vite.config.demo.ts",
     "preview": "vite preview",
     "cloudflare-build": "npm install @rollup/rollup-linux-x64-gnu && tsc && vite build",
     "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@types/html2canvas": "^1.0.0",

@@ -1,5 +1,6 @@
 # Optional - Ignore build or distribution folders
 dist
+dist-demo
 build
 
 # Optional - Environment files
@@ -11,6 +12,13 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Claude Code
+.claude/
+.mcp.json
+
+# Playwright MCP
+.playwright-mcp/
 
 # Editor directories and files
 .vscode/*

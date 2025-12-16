@@ -15,14 +15,16 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
   const themeStyles = getTheme(theme);
 
   // Parse all slides at once for PDF export
+  // Notes are automatically excluded since we only render the blocks
   const rawSlides = markdownContent.split(/^---$/m);
   const slides = rawSlides
     .map(slide => parseSlideContent(slide))
-    .filter(blocks => blocks.length > 0);
+    .filter(parsed => parsed.blocks.length > 0);
 
   return (
     <div className="pdf-export-container">
-      {slides.map((slideBlocks, index) => {
+      {slides.map((parsedSlide, index) => {
+        const slideBlocks = parsedSlide.blocks;
         const markdownBlock = slideBlocks.find(block => block.type === 'markdown');
         const chartBlock = slideBlocks.find(block => block.type === 'chart');
         const animateBlock = slideBlocks.find(block => block.type === 'animate');
