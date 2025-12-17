@@ -782,6 +782,93 @@ $$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} \\begin{pmatrix} 5 \\\\ 6 \\e
 
 ---
 
+## Interactive Matrix Visualization
+
+*Click the equation to see its visual representation!*
+
+\`\`\`math-visual
+type: matrix-2x2
+interactive: true
+values: [[1, 2], [3, 4]]
+equation: |
+  $$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$$
+\`\`\`
+
+---
+
+## Determinant Visualization
+
+*See how the determinant is calculated step by step:*
+
+\`\`\`math-visual
+type: determinant
+interactive: true
+values: [[1, 2], [3, 4]]
+equation: |
+  $$\\det(A) = ad - bc = (1)(4) - (2)(3) = -2$$
+\`\`\`
+
+---
+
+## Matrix Multiplication Visual
+
+*Watch the row-by-column multiplication:*
+
+\`\`\`math-visual
+type: matrix-multiplication
+interactive: true
+values: [[[1, 2], [3, 4]], [5, 6]]
+equation: |
+  $$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} \\begin{pmatrix} 5 \\\\ 6 \\end{pmatrix} = \\begin{pmatrix} 17 \\\\ 39 \\end{pmatrix}$$
+\`\`\`
+
+---
+
+## Geometric Transformation
+
+*See how a matrix transforms the unit square:*
+
+\`\`\`math-visual
+type: transformation
+interactive: true
+values: [[1, 0.5], [0.5, 1]]
+equation: |
+  $$T(\\vec{v}) = A\\vec{v} = \\begin{pmatrix} 1 & 0.5 \\\\ 0.5 & 1 \\end{pmatrix} \\vec{v}$$
+\`\`\`
+
+---
+
+## Function Plotting
+
+*Visualize any mathematical function:*
+
+\`\`\`math-visual
+type: function-plot
+interactive: true
+func: sin(x)
+domain: [-6.28, 6.28]
+equation: |
+  $$f(x) = \\sin(x)$$
+\`\`\`
+
+---
+
+## Integral Area Visualization
+
+*See the area under a curve:*
+
+\`\`\`math-visual
+type: integral-area
+interactive: true
+func: x^2
+bounds: [0, 2]
+domain: [-1, 3]
+equation: |
+  $$\\int_0^2 x^2 \\, dx = \\frac{x^3}{3} \\Big|_0^2 = \\frac{8}{3}$$
+\`\`\`
+
+---
+
 ## Summations & Products
 
 Summation notation:

@@ -2,6 +2,7 @@ import React from 'react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
+import MathVisualRenderer from './MathVisualRenderer';
 import { parseSlideContent } from '../utils/parseSlideContent';
 import { getTheme, ThemeName } from '../utils/themes';
 
@@ -28,6 +29,7 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
         const markdownBlock = slideBlocks.find(block => block.type === 'markdown');
         const chartBlock = slideBlocks.find(block => block.type === 'chart');
         const animateBlock = slideBlocks.find(block => block.type === 'animate');
+        const mathVisualBlock = slideBlocks.find(block => block.type === 'math-visual');
 
         return (
           <div
@@ -72,6 +74,13 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
                       <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
                     </div>
                   </AnimationWrapper>
+                </div>
+              )}
+
+              {/* Render math-visual in export mode (static, no flip) */}
+              {mathVisualBlock && (
+                <div className="relative">
+                  <MathVisualRenderer config={mathVisualBlock.config} isExport={true} />
                 </div>
               )}
             </div>

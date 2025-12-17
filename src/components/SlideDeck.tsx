@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
+import MathVisualRenderer from './MathVisualRenderer';
 import { SlideDeckProps } from '../types';
 import { parseSlideContent, ParsedSlide } from '../utils/parseSlideContent';
 import { getTheme } from '../utils/themes';
@@ -64,6 +65,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
   const markdownBlock = currentSlideBlocks.find(block => block.type === 'markdown');
   const chartBlock = currentSlideBlocks.find(block => block.type === 'chart');
   const animateBlock = currentSlideBlocks.find(block => block.type === 'animate');
+  const mathVisualBlock = currentSlideBlocks.find(block => block.type === 'math-visual');
   // Notes are stored in currentParsedSlide.notes but not rendered in normal view
 
   return (
@@ -105,6 +107,13 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
                     <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
                   </div>
                 </AnimationWrapper>
+              </div>
+            )}
+
+            {/* Render math-visual if present */}
+            {mathVisualBlock && (
+              <div className="relative z-20">
+                <MathVisualRenderer config={mathVisualBlock.config} />
               </div>
             )}
           </div>

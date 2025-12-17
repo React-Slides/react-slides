@@ -59,3 +59,312 @@ body {
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
 }
+
+/* ===== Flip Card Styles ===== */
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  /* Use a fixed height to prevent layout shifts and overlaps */
+  height: 400px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: var(--slide-bg);
+  border: 2px solid var(--slide-accent);
+  overflow: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+.flip-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ===== Math Visual Container Styles ===== */
+.math-visual-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.math-visual-title {
+  color: var(--slide-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.math-visual-equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.math-visual-equation .katex-display {
+  margin: 0 !important;
+}
+
+/* ===== Math Visual Export Styles ===== */
+.math-visual-export {
+  width: 100%;
+  padding: 1rem;
+}
+
+.math-visual-export-content {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.math-visual-export-equation,
+.math-visual-export-viz {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Visualization Loading State ===== */
+.viz-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  color: var(--slide-muted);
+  font-style: italic;
+}
+
+/* ===== Matrix Visualization Styles ===== */
+.matrix-viz {
+  display: inline-grid;
+  gap: 8px;
+  padding: 16px;
+  position: relative;
+}
+
+.matrix-viz::before,
+.matrix-viz::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 100%;
+  border: 3px solid var(--slide-text);
+}
+
+.matrix-viz::before {
+  left: 0;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.matrix-viz::after {
+  right: 0;
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.matrix-cell {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.matrix-cell:hover {
+  transform: scale(1.1);
+}
+
+.matrix-cell.editable {
+  cursor: pointer;
+}
+
+.matrix-cell.editable:hover {
+  box-shadow: 0 0 0 2px var(--slide-accent);
+}
+
+.matrix-cell-a { background: #ffcdd2; color: #b71c1c; }
+.matrix-cell-b { background: #c8e6c9; color: #1b5e20; }
+.matrix-cell-c { background: #fff9c4; color: #f57f17; }
+.matrix-cell-d { background: #bbdefb; color: #0d47a1; }
+
+/* ===== Determinant Visualization Styles ===== */
+.determinant-viz {
+  padding: 1rem;
+  text-align: center;
+}
+
+.determinant-formula {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+}
+
+.highlight-ad {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.highlight-bc {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.determinant-result {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--slide-accent);
+  margin-top: 0.5rem;
+}
+
+/* ===== Vector Visualization Styles ===== */
+.vector-viz {
+  display: inline-grid;
+  grid-template-rows: repeat(2, 40px);
+  gap: 6px;
+  padding: 12px 8px;
+  position: relative;
+}
+
+.vector-viz::before,
+.vector-viz::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  border: 2px solid var(--slide-text);
+}
+
+.vector-viz::before {
+  left: 0;
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+}
+
+.vector-viz::after {
+  right: 0;
+  border-left: none;
+  border-radius: 0 3px 3px 0;
+}
+
+.vector-cell {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  background: white;
+  border-radius: 4px;
+}
+
+/* ===== Transformation Canvas Styles ===== */
+.transformation-viz {
+  width: 100%;
+  max-width: 400px;
+}
+
+.transformation-canvas {
+  border: 2px solid var(--slide-text);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.transformation-controls {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.control-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--slide-text);
+}
+
+.control-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--slide-accent);
+}
+
+/* ===== Function Plot Styles ===== */
+.function-plot-viz {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ===== Integral Area Styles ===== */
+.integral-area-viz {
+  width: 100%;
+  max-width: 500px;
+}
+
+.integral-bounds {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+.integral-bounds .control-group {
+  flex: 0 0 auto;
+  min-width: 100px;
+}

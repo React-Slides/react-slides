@@ -1,10 +1,33 @@
 // utils/parseSlideContent.ts
 import yaml from 'js-yaml';
 
+export type MathVisualType =
+  | 'matrix-2x2'
+  | 'matrix-multiplication'
+  | 'determinant'
+  | 'transformation'
+  | 'function-plot'
+  | 'integral-area';
+
+export interface MathVisualConfig {
+  type: MathVisualType;
+  interactive?: boolean;
+  equation: string;
+  values?: number[][] | number[];
+  title?: string;
+  // Function plot specific
+  func?: string;
+  domain?: [number, number];
+  range?: [number, number];
+  // Integral specific
+  bounds?: [number, number];
+}
+
 export type SlideBlock =
   | { type: 'markdown'; content: string }
   | { type: 'chart'; config: any }
-  | { type: 'animate'; config: any };
+  | { type: 'animate'; config: any }
+  | { type: 'math-visual'; config: MathVisualConfig };
 
 export interface ParsedSlide {
   blocks: SlideBlock[];
@@ -39,7 +62,7 @@ export function parseSlideContent(raw: string): ParsedSlide {
   // First extract speaker notes
   const { content: contentWithoutNotes, notes } = extractNotes(raw);
 
-  const codeBlockRegex = /```(chart|animate)\s*\n([\s\S]*?)```/m;
+  const codeBlockRegex = /```(chart|animate|math-visual)\s*\n([\s\S]*?)```/m;
   const match = contentWithoutNotes.match(codeBlockRegex);
 
   if (match) {
@@ -56,7 +79,7 @@ export function parseSlideContent(raw: string): ParsedSlide {
 
     const parsedBlocks: SlideBlock[] = [
       { type: 'markdown', content: stripped },
-      { type: blockType as 'chart' | 'animate', config }
+      { type: blockType as 'chart' | 'animate' | 'math-visual', config }
     ];
 
     console.log("Parsed Blocks:", parsedBlocks);
