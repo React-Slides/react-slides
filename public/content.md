@@ -1,3 +1,6 @@
+---
+theme: light
+---
 # React Slides 🎯
 
 A modern, markdown-driven presentation tool built with React and Vite.
@@ -109,3 +112,13 @@ function createSlide(content) {
 # Ready to Create? 🎉
 
 Start building your own presentations with React Slides!
+
+---
+
+# MCP Server Demo
+
+Testing the new implementation
+
+**Presented by:** Claude
+
+**Date:** December 2025
