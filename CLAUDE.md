@@ -33,9 +33,9 @@ React Slides is a markdown-driven presentation tool. Users write slides in markd
    - Renders markdown, chart, and animation blocks
 
 3. **parseSlideContent.ts** - Core parsing utility
-   - Extracts special code blocks (` ```chart ` and ` ```animate `) from markdown
+   - Extracts special code blocks (` ```chart `, ` ```animate `, ` ```math-visual `) from markdown
    - Parses YAML config from special blocks using js-yaml
-   - Returns array of `SlideBlock` types: `markdown`, `chart`, or `animate`
+   - Returns array of `SlideBlock` types: `markdown`, `chart`, `animate`, or `math-visual`
 
 ### Component Hierarchy
 
@@ -45,7 +45,16 @@ App
 └── SlideDeck (presentation mode)
     ├── MarkdownSlide (ReactMarkdown with remark-gfm)
     ├── ChartRenderer (Recharts: bar/line/pie)
-    └── AnimationWrapper (CSS animations)
+    ├── AnimationWrapper (CSS animations)
+    └── MathVisualRenderer (math visualizations)
+        ├── FlipCard (optional flip layout)
+        └── visualizations/
+            ├── Matrix2x2Viz
+            ├── DeterminantViz
+            ├── MatrixMultiplicationViz
+            ├── TransformationViz (canvas-based)
+            ├── FunctionPlotViz (Recharts)
+            └── IntegralAreaViz (Recharts)
 ```
 
 ### Theme System
@@ -65,7 +74,7 @@ Each theme defines: `--slide-bg`, `--slide-text`, `--slide-accent`, `--slide-mut
 
 ### Special Markdown Blocks
 
-Charts and animations are defined in fenced code blocks with YAML config:
+Charts, animations, and math visualizations are defined in fenced code blocks with YAML config:
 
 ```markdown
 ```chart
@@ -81,7 +90,40 @@ data:
 type: fade-in|slide-up|bounce|spin|ping|pulse
 ```
 
-Note: Only one special block (`chart` or `animate`) per slide.
+```markdown
+```math-visual
+type: matrix-2x2|determinant|matrix-multiplication|transformation|function-plot|integral-area
+equation: |
+  $$\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$$
+values: [[1, 2], [3, 4]]
+layout: split|flip
+interactive: true
+```
+
+#### Math Visual Block Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `type` | string | required | Visualization type (see below) |
+| `equation` | string | required | KaTeX equation to display |
+| `values` | array | varies | Data for visualization |
+| `layout` | string | `split` | `split` (side-by-side) or `flip` (click to flip card) |
+| `interactive` | boolean | `true` | Enable sliders/inputs (web only) |
+| `title` | string | optional | Title above visualization |
+| `func` | string | optional | Function expression for function-plot/integral-area |
+| `domain` | [number, number] | optional | X-axis range for function plots |
+| `bounds` | [number, number] | optional | Integration bounds for integral-area |
+
+#### Visualization Types
+
+- `matrix-2x2`: Color-coded 2x2 matrix grid with editable cells
+- `determinant`: Matrix with ad-bc formula breakdown and result
+- `matrix-multiplication`: Matrix × vector calculation with step-by-step
+- `transformation`: Canvas-based geometric transformation visualization
+- `function-plot`: Interactive function graphing with Recharts
+- `integral-area`: Function curve with shaded integral area
+
+Note: Only one special block (`chart`, `animate`, or `math-visual`) per slide.
 
 ### Export Utilities
 

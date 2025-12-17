@@ -108,7 +108,34 @@ type: fade-in
 
 ````
 
-**Note:** Only one special block (`chart` or `animate`) per slide as part of the MVP.
+#### 🧮 `math-visual` block
+
+Display mathematical equations with interactive visualizations:
+
+````markdown
+```math-visual
+type: matrix-2x2
+equation: |
+  $$\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$$
+values: [[1, 2], [3, 4]]
+layout: split
+interactive: true
+```
+````
+
+**Visualization Types:**
+- `matrix-2x2` - Color-coded 2x2 matrix grid
+- `determinant` - Matrix with ad-bc formula breakdown
+- `matrix-multiplication` - Matrix × vector step-by-step
+- `transformation` - Geometric transformation canvas
+- `function-plot` - Interactive function graphing
+- `integral-area` - Function curve with shaded area
+
+**Layout Options:**
+- `split` (default) - Equation and visualization side-by-side
+- `flip` - Click to flip between equation and visualization
+
+**Note:** Only one special block (`chart`, `animate`, or `math-visual`) per slide.
 
 These blocks are parsed and rendered automatically inside the React Slides app.
 
