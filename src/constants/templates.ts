@@ -696,6 +696,164 @@ data:
 `
   },
   {
+    id: 'math-showcase',
+    name: 'Math & Science',
+    description: 'Demonstrate mathematical notation and formulas with KaTeX',
+    category: 'educational',
+    content: `---
+theme: light
+---
+# Mathematics with KaTeX
+
+**Beautiful Equations in Your Presentations**
+
+*Powered by KaTeX - The fastest math typesetting library*
+
+<!--notes
+This template demonstrates the math rendering capabilities using KaTeX.
+You can use both inline and display math notation.
+-->
+
+---
+
+## Inline Equations
+
+Math can appear inline with your text:
+
+Einstein's famous equation $E = mc^2$ relates energy and mass.
+
+The quadratic formula gives us $x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$ for any quadratic equation.
+
+Euler's identity $e^{i\\pi} + 1 = 0$ is often called the most beautiful equation in mathematics.
+
+The golden ratio is $\\phi = \\frac{1 + \\sqrt{5}}{2} \\approx 1.618$
+
+---
+
+## Display Equations
+
+Centered equations for emphasis:
+
+The Gaussian integral:
+
+$$\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}$$
+
+The Pythagorean theorem:
+
+$$a^2 + b^2 = c^2$$
+
+Maxwell's first equation (Gauss's law):
+
+$$\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}$$
+
+---
+
+## Calculus
+
+**Derivatives:**
+
+$$\\frac{d}{dx}[x^n] = nx^{n-1}$$
+
+$$\\frac{d}{dx}[\\sin x] = \\cos x$$
+
+**Integrals:**
+
+$$\\int x^n \\, dx = \\frac{x^{n+1}}{n+1} + C$$
+
+**Limits:**
+
+$$\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$$
+
+---
+
+## Matrices & Linear Algebra
+
+A 2x2 matrix:
+
+$$\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$$
+
+Matrix determinant:
+
+$$\\det(A) = \\begin{vmatrix} a & b \\\\ c & d \\end{vmatrix} = ad - bc$$
+
+Matrix multiplication example:
+
+$$\\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix} \\begin{pmatrix} 5 \\\\ 6 \\end{pmatrix} = \\begin{pmatrix} 17 \\\\ 39 \\end{pmatrix}$$
+
+---
+
+## Summations & Products
+
+Summation notation:
+
+$$\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$$
+
+Product notation:
+
+$$\\prod_{i=1}^{n} i = n!$$
+
+Series:
+
+$$e^x = \\sum_{n=0}^{\\infty} \\frac{x^n}{n!} = 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\cdots$$
+
+---
+
+## Statistics & Probability
+
+Normal distribution (Gaussian):
+
+$$f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}$$
+
+Bayes' theorem:
+
+$$P(A|B) = \\frac{P(B|A) \\cdot P(A)}{P(B)}$$
+
+Expected value:
+
+$$E[X] = \\sum_{i} x_i \\cdot P(x_i)$$
+
+---
+
+## Greek Letters & Symbols
+
+| Symbol | Code | Symbol | Code |
+|--------|------|--------|------|
+| $\\alpha$ | \\\\alpha | $\\beta$ | \\\\beta |
+| $\\gamma$ | \\\\gamma | $\\delta$ | \\\\delta |
+| $\\theta$ | \\\\theta | $\\lambda$ | \\\\lambda |
+| $\\pi$ | \\\\pi | $\\sigma$ | \\\\sigma |
+| $\\phi$ | \\\\phi | $\\omega$ | \\\\omega |
+| $\\infty$ | \\\\infty | $\\partial$ | \\\\partial |
+| $\\nabla$ | \\\\nabla | $\\sum$ | \\\\sum |
+
+---
+
+## Physics Equations
+
+**Newton's Second Law:**
+$$\\vec{F} = m\\vec{a}$$
+
+**Schrödinger Equation:**
+$$i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi$$
+
+**Wave Equation:**
+$$\\frac{\\partial^2 u}{\\partial t^2} = c^2 \\nabla^2 u$$
+
+**Einstein's Field Equations:**
+$$R_{\\mu\\nu} - \\frac{1}{2}Rg_{\\mu\\nu} = \\frac{8\\pi G}{c^4}T_{\\mu\\nu}$$
+
+---
+
+# Thank You!
+
+*Beautiful math made simple*
+
+$$\\mathcal{Q.E.D.}$$
+
+**KaTeX Syntax Guide:** [katex.org/docs/supported.html](https://katex.org/docs/supported.html)
+`
+  },
+  {
     id: 'blank-starter',
     name: 'Blank Starter',
     description: 'A minimal template to start from scratch',
