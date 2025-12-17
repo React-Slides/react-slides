@@ -79,11 +79,11 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
     >
       <div className="flex-1 relative">
         {/* Single container for all slide content */}
-        <div className="absolute inset-0 p-8 flex flex-col justify-center">
+        <div className="absolute inset-0 p-6 flex flex-col justify-center">
           <div className="max-w-4xl mx-auto w-full">
             {/* Render markdown content if present */}
             {markdownBlock && (
-              <div className="mb-2">
+              <div className="mb-0">
                 <MarkdownSlide
                   index={0}
                   content={markdownBlock.content}

@@ -831,7 +831,6 @@ equation: |
 \`\`\`math-visual
 type: transformation
 interactive: true
-layout: split
 values: [[1, 0.5], [0.5, 1]]
 equation: |
   $$T(\\vec{v}) = A\\vec{v} = \\begin{pmatrix} 1 & 0.5 \\\\ 0.5 & 1 \\end{pmatrix} \\vec{v}$$

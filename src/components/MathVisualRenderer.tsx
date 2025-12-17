@@ -70,33 +70,33 @@ const MathVisualRenderer: React.FC<MathVisualRendererProps> = ({
     );
   };
 
-  // For exports or explicit split layout, show side-by-side
-  if (isExport || config.layout === 'split') {
+  // For interactive flip card (only if explicitly requested and not exporting)
+  if (config.layout === 'flip' && !isExport) {
     return (
-      <div className={isExport ? "math-visual-export" : "math-visual-container"}>
+      <div className="math-visual-container">
         {config.title && <h3 className="math-visual-title">{config.title}</h3>}
-        <div className={isExport ? "math-visual-export-content" : "flex flex-col md:flex-row gap-8 items-center justify-center w-full"}>
-          <div className={isExport ? "math-visual-export-equation" : "flex-1 flex justify-center"}>
-            {renderEquation()}
-          </div>
-          <div className={isExport ? "math-visual-export-viz" : "flex-1 flex justify-center w-full"}>
-            {renderVisualization()}
-          </div>
-        </div>
+        <FlipCard
+          front={renderEquation()}
+          back={renderVisualization()}
+          size={getFlipCardSize(config.type)}
+          className="math-visual-flip-card"
+        />
       </div>
     );
   }
 
-  // For web default, show flip card with interactive visualization
+  // Default: Show split/combined view (side-by-side or stacked)
   return (
-    <div className="math-visual-container">
+    <div className={isExport ? "math-visual-export" : "math-visual-container"}>
       {config.title && <h3 className="math-visual-title">{config.title}</h3>}
-      <FlipCard
-        front={renderEquation()}
-        back={renderVisualization()}
-        size={getFlipCardSize(config.type)}
-        className="math-visual-flip-card"
-      />
+      <div className={isExport ? "math-visual-export-content" : "flex flex-col md:flex-row gap-8 items-center justify-center w-full"}>
+        <div className={isExport ? "math-visual-export-equation" : "flex-1 flex justify-center"}>
+          {renderEquation()}
+        </div>
+        <div className={isExport ? "math-visual-export-viz" : "flex-1 flex justify-center w-full"}>
+          {renderVisualization()}
+        </div>
+      </div>
     </div>
   );
 };
