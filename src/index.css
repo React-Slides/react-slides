@@ -65,10 +65,23 @@ body {
   perspective: 1000px;
   cursor: pointer;
   width: 100%;
-  max-width: 600px;
   margin: 1rem auto;
-  /* Use a fixed height to prevent layout shifts and overlaps */
-  height: 400px;
+}
+
+/* Size variants - each visualization type uses the appropriate size */
+.flip-card-small {
+  height: 250px;
+  max-width: 400px;
+}
+
+.flip-card-medium {
+  height: 380px;
+  max-width: 550px;
+}
+
+.flip-card-large {
+  height: 580px;
+  max-width: 500px;
 }
 
 .flip-card-inner {
@@ -110,8 +123,6 @@ body {
   justify-content: center;
   padding: 1rem;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 /* ===== Math Visual Container Styles ===== */

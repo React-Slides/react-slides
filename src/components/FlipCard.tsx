@@ -5,9 +5,10 @@ interface FlipCardProps {
   back: ReactNode;
   className?: string;
   disabled?: boolean;
+  size?: 'small' | 'medium' | 'large';
 }
 
-const FlipCard: React.FC<FlipCardProps> = ({ front, back, className = '', disabled = false }) => {
+const FlipCard: React.FC<FlipCardProps> = ({ front, back, className = '', disabled = false, size = 'medium' }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
@@ -25,7 +26,7 @@ const FlipCard: React.FC<FlipCardProps> = ({ front, back, className = '', disabl
 
   return (
     <div
-      className={`flip-card ${isFlipped ? 'flipped' : ''} ${className}`}
+      className={`flip-card flip-card-${size} ${isFlipped ? 'flipped' : ''} ${className}`}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="button"

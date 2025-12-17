@@ -19,6 +19,22 @@ const TransformationViz = React.lazy(() => import('./visualizations/Transformati
 const FunctionPlotViz = React.lazy(() => import('./visualizations/FunctionPlotViz'));
 const IntegralAreaViz = React.lazy(() => import('./visualizations/IntegralAreaViz'));
 
+// Map visualization types to appropriate flip card sizes
+const getFlipCardSize = (vizType: string): 'small' | 'medium' | 'large' => {
+  switch (vizType) {
+    case 'matrix-2x2':
+      return 'small';
+    case 'transformation':
+      return 'large';
+    case 'determinant':
+    case 'matrix-multiplication':
+    case 'function-plot':
+    case 'integral-area':
+    default:
+      return 'medium';
+  }
+};
+
 const MathVisualRenderer: React.FC<MathVisualRendererProps> = ({
   config,
   isExport = false,
@@ -74,6 +90,7 @@ const MathVisualRenderer: React.FC<MathVisualRendererProps> = ({
       <FlipCard
         front={renderEquation()}
         back={renderVisualization()}
+        size={getFlipCardSize(config.type)}
         className="math-visual-flip-card"
       />
     </div>

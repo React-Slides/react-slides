@@ -13,9 +13,11 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const scale = 40;
-  const centerX = 175;
-  const centerY = 175;
+  // Canvas dimensions - reduced for compact display
+  const canvasSize = 300;
+  const scale = 35;
+  const centerX = 150;
+  const centerY = 150;
 
   const drawVisualization = useCallback(() => {
     const canvas = canvasRef.current;
@@ -25,7 +27,7 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
     if (!ctx) return;
 
     // Clear canvas
-    ctx.clearRect(0, 0, 350, 350);
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
 
     // Draw grid
     ctx.strokeStyle = '#e0e0e0';
@@ -34,12 +36,12 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
     for (let i = -7; i <= 7; i++) {
       ctx.beginPath();
       ctx.moveTo(centerX + i * scale, 0);
-      ctx.lineTo(centerX + i * scale, 350);
+      ctx.lineTo(centerX + i * scale, canvasSize);
       ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(0, centerY + i * scale);
-      ctx.lineTo(350, centerY + i * scale);
+      ctx.lineTo(canvasSize, centerY + i * scale);
       ctx.stroke();
     }
 
@@ -49,12 +51,12 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
 
     ctx.beginPath();
     ctx.moveTo(centerX, 0);
-    ctx.lineTo(centerX, 350);
+    ctx.lineTo(centerX, canvasSize);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(0, centerY);
-    ctx.lineTo(350, centerY);
+    ctx.lineTo(canvasSize, centerY);
     ctx.stroke();
 
     // Draw original unit square (blue)
@@ -120,18 +122,18 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
   const determinant = a * d - b * c;
 
   return (
-    <div className="transformation-viz" style={{ width: '100%', maxWidth: '400px' }}>
+    <div className="transformation-viz" style={{ width: '100%', maxWidth: '350px' }}>
       <canvas
         ref={canvasRef}
-        width={350}
-        height={350}
+        width={canvasSize}
+        height={canvasSize}
         className="transformation-canvas"
         style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}
         onClick={(e) => e.stopPropagation()}
       />
 
       {interactive && (
-        <div className="transformation-controls" style={{ padding: '0.5rem', marginTop: '0.5rem' }}>
+        <div className="transformation-controls" style={{ padding: '0.5rem', marginTop: '0.25rem' }}>
           <div className="control-group">
             <label style={{ fontSize: '0.8rem' }}>a = {a.toFixed(1)}</label>
             <input
@@ -183,11 +185,11 @@ const TransformationViz: React.FC<VisualizationProps> = ({ config, interactive =
         </div>
       )}
 
-      <div style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+      <div style={{ textAlign: 'center', marginTop: '0.25rem', fontSize: '0.85rem' }}>
         <span style={{ fontWeight: 'bold', color: 'var(--slide-accent)' }}>
           det(A) = {determinant.toFixed(2)}
         </span>
-        <span style={{ marginLeft: '0.5rem', color: 'var(--slide-muted)' }}>
+        <span style={{ marginLeft: '0.5rem', color: 'var(--slide-muted)', fontSize: '0.75rem' }}>
           (Area scaling)
         </span>
       </div>
