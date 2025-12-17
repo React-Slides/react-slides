@@ -21,6 +21,7 @@ export interface MathVisualConfig {
   range?: [number, number];
   // Integral specific
   bounds?: [number, number];
+  layout?: 'flip' | 'split';
 }
 
 export type SlideBlock =

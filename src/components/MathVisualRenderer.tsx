@@ -70,20 +70,24 @@ const MathVisualRenderer: React.FC<MathVisualRendererProps> = ({
     );
   };
 
-  // For exports, show both equation and static visualization side-by-side
-  if (isExport) {
+  // For exports or explicit split layout, show side-by-side
+  if (isExport || config.layout === 'split') {
     return (
-      <div className="math-visual-export">
+      <div className={isExport ? "math-visual-export" : "math-visual-container"}>
         {config.title && <h3 className="math-visual-title">{config.title}</h3>}
-        <div className="math-visual-export-content">
-          <div className="math-visual-export-equation">{renderEquation()}</div>
-          <div className="math-visual-export-viz">{renderVisualization()}</div>
+        <div className={isExport ? "math-visual-export-content" : "flex flex-col md:flex-row gap-8 items-center justify-center w-full"}>
+          <div className={isExport ? "math-visual-export-equation" : "flex-1 flex justify-center"}>
+            {renderEquation()}
+          </div>
+          <div className={isExport ? "math-visual-export-viz" : "flex-1 flex justify-center w-full"}>
+            {renderVisualization()}
+          </div>
         </div>
       </div>
     );
   }
 
-  // For web, show flip card with interactive visualization
+  // For web default, show flip card with interactive visualization
   return (
     <div className="math-visual-container">
       {config.title && <h3 className="math-visual-title">{config.title}</h3>}
