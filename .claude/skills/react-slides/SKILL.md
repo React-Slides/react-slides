@@ -182,6 +182,9 @@ The react-slides MCP server provides programmatic access for AI-assisted slide c
 - `export_pdf` - Export to PDF format
 - `export_pptx` - Export to PowerPoint format
 
+#### Artifact Rendering (Claude Desktop)
+- `slides_render` - Generate a self-contained React component for Claude Desktop artifacts
+
 #### Validation
 - `slides_validate` - Validate markdown content
 
@@ -349,3 +352,56 @@ App.tsx (root)
 4. **Choose appropriate charts** - Bar for comparison, line for trends, pie for composition
 5. **Test responsiveness** - Preview at different viewport sizes
 6. **Use speaker notes** - Keep detailed talking points in `<!--notes -->` blocks
+
+## Claude Desktop Workflow
+
+When using React Slides with Claude Desktop, follow this workflow for real-time slide editing:
+
+### Creating and Viewing Presentations
+
+1. **Create/modify slides** using MCP tools (`slides_create`, `slides_update`, etc.)
+2. **Render as artifact** using `slides_render` tool
+3. **Display the React component** as a Claude artifact for live preview
+4. **Iterate** based on user feedback - repeat steps 1-3
+
+### Example Workflow
+
+```
+User: "Create a presentation about AI trends"
+
+Claude:
+1. Call slides_create with markdown content and theme
+2. Call slides_render to get React component
+3. Render component as artifact (user sees live slides)
+
+User: "Add a pie chart to slide 2"
+
+Claude:
+1. Call chart_create to generate chart block
+2. Call slides_update to add chart to slide 2
+3. Call slides_render to get updated component
+4. Re-render artifact (user sees updated slides)
+```
+
+### slides_render Tool Details
+
+The `slides_render` tool returns a self-contained React component that:
+- Works with Claude Desktop's artifact rendering
+- Uses Recharts (pre-installed in Claude artifacts)
+- Uses Lucide React icons (pre-installed in Claude artifacts)
+- Supports all 6 themes with proper styling
+- Includes full navigation (prev/next buttons, keyboard, dots)
+- Renders charts (bar, line, pie) with theme colors
+
+**Parameters:**
+- `slideIndex` (optional): Render only a specific slide (0-indexed)
+
+**Returns:**
+- `component`: The React JSX code to render as an artifact
+- `slideCount`: Number of slides
+- `theme`: Current theme name
+
+**Usage pattern for Claude:**
+1. Call the tool to get the component
+2. Extract the `component` field from the response
+3. Render it as a React artifact for the user
