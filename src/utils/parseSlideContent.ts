@@ -83,11 +83,9 @@ export function parseSlideContent(raw: string): ParsedSlide {
       { type: blockType as 'chart' | 'animate' | 'math-visual', config }
     ];
 
-    console.log("Parsed Blocks:", parsedBlocks);
     return { blocks: parsedBlocks, notes };
   }
 
-  console.log("No match found, parsed markdown-only block:", [{ type: 'markdown', content: contentWithoutNotes.trim() }]);
   return { blocks: [{ type: 'markdown', content: contentWithoutNotes.trim() }], notes };
 }
 
