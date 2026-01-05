@@ -15,6 +15,7 @@ dist-ssr
 
 # Claude Code (keep skills and agents, ignore local settings)
 .claude/settings.local.json
+.claude/*.local.*
 .mcp.json
 
 # Playwright MCP
