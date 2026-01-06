@@ -1,5 +1,9 @@
 # React Slides 🎯
 
+[![GitHub Pages](https://github.com/STR-Ventures/react-slides/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/STR-Ventures/react-slides/actions/workflows/deploy-pages.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/github/package-json/v/STR-Ventures/react-slides?label=version)](https://github.com/STR-Ventures/react-slides/packages)
+
 A modern, markdown-driven slide deck presentation tool built with React and Vite, allowing you to create beautiful presentations using simple markdown syntax.
 
 ## Features

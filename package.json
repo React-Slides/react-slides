@@ -4,6 +4,21 @@
   "type": "module",
   "license": "MIT",
   "description": "A markdown-driven presentation tool for creating interactive slide decks",
+  "keywords": [
+    "react",
+    "slides",
+    "presentation",
+    "markdown",
+    "slideshow",
+    "slide-deck",
+    "charts",
+    "recharts",
+    "animations",
+    "katex",
+    "math",
+    "pdf-export",
+    "pptx-export"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/STR-Ventures/react-slides.git"
