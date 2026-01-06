@@ -13,6 +13,9 @@ dist
 dist-ssr
 *.local
 
+# Test coverage output
+coverage/
+
 # Claude Code (keep skills and agents, ignore local settings)
 .claude/settings.local.json
 .claude/*.local.*
