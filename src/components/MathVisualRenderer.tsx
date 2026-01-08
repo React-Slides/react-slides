@@ -2,7 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+// Note: katex CSS must be imported by the consumer app
 import FlipCard from './FlipCard';
 import { MathVisualConfig } from '../utils/parseSlideContent';
 

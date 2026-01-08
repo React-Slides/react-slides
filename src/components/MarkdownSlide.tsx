@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
+// Note: katex CSS must be imported by the consumer app
 import { MarkdownSlideProps } from '../types';
 
 const MarkdownSlide: React.FC<MarkdownSlideProps> = ({ content, isActive }) => {

@@ -1,4 +1,7 @@
 // React Slides Library Entry Point
+// Import library styles
+import './index.css';
+
 // Export main components
 export { default as SlideDeck } from './components/SlideDeck';
 export { default as PDFSlideDeck } from './components/PDFSlideDeck';
