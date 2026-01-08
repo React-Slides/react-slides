@@ -25,10 +25,58 @@ A modern, markdown-driven slide deck presentation tool built with React and Vite
 
 ## Getting Started
 
-### Installation
+### Install as a Library
 
 ```bash
-git clone https://github.com/your-username/react-slides.git
+npm install @str-ventures/react-slides
+```
+
+Most peer dependencies are likely already in your project. If not, install the required ones:
+
+```bash
+npm install react react-dom recharts react-markdown remark-gfm remark-math rehype-katex katex lucide-react js-yaml
+```
+
+**Optional:** For PDF/PPTX export features:
+
+```bash
+npm install html2canvas jspdf pptxgenjs
+```
+
+#### Setup
+
+Import the CSS in your app entry point:
+
+```tsx
+import 'katex/dist/katex.min.css';
+import '@str-ventures/react-slides/styles.css';
+```
+
+#### Basic Usage
+
+```tsx
+import { SlideDeck } from '@str-ventures/react-slides';
+
+function App() {
+  const markdown = `
+# Welcome
+Your first slide
+
+---
+
+## Second Slide
+- Point 1
+- Point 2
+`;
+
+  return <SlideDeck markdown={markdown} />;
+}
+```
+
+### Development Setup
+
+```bash
+git clone https://github.com/STR-Ventures/react-slides.git
 cd react-slides
 npm install
 npm run dev
