@@ -3,8 +3,9 @@
 import './index.css';
 
 // Export main components
+// Note: PDFSlideDeck is intentionally not exported - it's an internal component
+// used by exportSlidesToPDF/exportSlidesToPPTX via dynamic import
 export { default as SlideDeck } from './components/SlideDeck';
-export { default as PDFSlideDeck } from './components/PDFSlideDeck';
 export { default as MarkdownSlide } from './components/MarkdownSlide';
 export { default as ChartRenderer } from './components/ChartRenderer';
 export { default as AnimationWrapper } from './components/AnimationWrapper';

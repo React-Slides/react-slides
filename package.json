@@ -34,7 +34,9 @@
   "main": "dist/react-slides.js",
   "module": "dist/react-slides.js",
   "types": "dist/index.d.ts",
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     ".": {
       "import": "./dist/react-slides.js",
@@ -42,7 +44,6 @@
     },
     "./styles.css": "./dist/react-slides.css"
   },
-  "dependencies": {},
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -56,24 +57,30 @@
     "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "recharts": "^2.0.0",
-    "react-markdown": "^8.0.0 || ^9.0.0",
-    "remark-gfm": "^3.0.0 || ^4.0.0",
-    "remark-math": "^5.0.0 || ^6.0.0",
-    "rehype-katex": "^6.0.0 || ^7.0.0",
+    "html2canvas": "^1.4.0",
+    "js-yaml": "^4.0.0",
+    "jspdf": "^2.0.0 || ^4.0.0",
     "katex": "^0.16.0",
     "lucide-react": "^0.200.0 || ^0.300.0 || ^0.400.0",
-    "js-yaml": "^4.0.0",
-    "html2canvas": "^1.4.0",
-    "jspdf": "^2.0.0 || ^4.0.0",
-    "pptxgenjs": "^3.0.0 || ^4.0.0"
+    "pptxgenjs": "^3.0.0 || ^4.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-markdown": "^8.0.0 || ^9.0.0",
+    "recharts": "^2.0.0",
+    "rehype-katex": "^6.0.0 || ^7.0.0",
+    "remark-gfm": "^3.0.0 || ^4.0.0",
+    "remark-math": "^5.0.0 || ^6.0.0"
   },
   "peerDependenciesMeta": {
-    "html2canvas": { "optional": true },
-    "jspdf": { "optional": true },
-    "pptxgenjs": { "optional": true }
+    "html2canvas": {
+      "optional": true
+    },
+    "jspdf": {
+      "optional": true
+    },
+    "pptxgenjs": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
