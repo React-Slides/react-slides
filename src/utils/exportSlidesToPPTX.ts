@@ -1,5 +1,3 @@
-import html2canvas from 'html2canvas';
-import PptxGenJS from 'pptxgenjs';
 import { ThemeName, getTheme } from './themes';
 
 /**
@@ -10,6 +8,28 @@ export const exportSlidesToPPTX = async (
   markdownContent: string,
   theme: ThemeName = 'light'
 ): Promise<void> => {
+  // Dynamic import of optional dependencies with graceful error handling
+  let html2canvas: typeof import('html2canvas').default;
+  let PptxGenJS: typeof import('pptxgenjs').default;
+
+  try {
+    const html2canvasModule = await import('html2canvas');
+    html2canvas = html2canvasModule.default;
+  } catch {
+    throw new Error(
+      'PPTX export requires html2canvas. Install it with: npm install html2canvas'
+    );
+  }
+
+  try {
+    const pptxModule = await import('pptxgenjs');
+    PptxGenJS = pptxModule.default;
+  } catch {
+    throw new Error(
+      'PPTX export requires pptxgenjs. Install it with: npm install pptxgenjs'
+    );
+  }
+
   try {
     // Get theme colors for background
     const themeColors = getTheme(theme);

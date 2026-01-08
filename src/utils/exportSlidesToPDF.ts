@@ -1,11 +1,31 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { ThemeName, getTheme } from './themes';
 
 export const exportSlidesToPDF = async (
   markdownContent: string,
   theme: ThemeName = 'light'
 ): Promise<void> => {
+  // Dynamic import of optional dependencies with graceful error handling
+  let html2canvas: typeof import('html2canvas').default;
+  let jsPDF: typeof import('jspdf').default;
+
+  try {
+    const html2canvasModule = await import('html2canvas');
+    html2canvas = html2canvasModule.default;
+  } catch {
+    throw new Error(
+      'PDF export requires html2canvas. Install it with: npm install html2canvas'
+    );
+  }
+
+  try {
+    const jspdfModule = await import('jspdf');
+    jsPDF = jspdfModule.default;
+  } catch {
+    throw new Error(
+      'PDF export requires jspdf. Install it with: npm install jspdf'
+    );
+  }
+
   try {
     // Get theme colors for background
     const themeColors = getTheme(theme);
