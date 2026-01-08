@@ -7,6 +7,7 @@ export { default as ChartRenderer } from './components/ChartRenderer';
 export { default as AnimationWrapper } from './components/AnimationWrapper';
 export { default as MarkdownForm } from './components/MarkdownForm';
 export { default as TemplatePicker } from './components/TemplatePicker';
+export { default as MathVisualRenderer } from './components/MathVisualRenderer';
 
 // Export utility functions
 export { parseSlideContent } from './utils/parseSlideContent';
@@ -32,4 +33,9 @@ export type {
 
 export type { Template } from './constants/templates';
 export type { ThemeName } from './utils/themes';
-export type { ParsedSlide, SlideBlock } from './utils/parseSlideContent';
+export type {
+  ParsedSlide,
+  SlideBlock,
+  MathVisualConfig,
+  MathVisualType,
+} from './utils/parseSlideContent';
