@@ -56,6 +56,91 @@ If you find a bug, please create an issue on GitHub. include as much detail as p
 - Actual behavior
 - Screenshots (if applicable)
 
+## AI Coding Agent Guidelines
+
+When contributing to this project using an AI Coding Agent (such as Claude Code, Cursor, or similar tools), contributors **must** set up and use the following MCP (Model Context Protocol) Servers to ensure consistent, high-quality contributions.
+
+### Required MCP Servers
+
+#### 1. Playwright
+
+Browser automation and testing server for validating UI changes and running end-to-end tests.
+
+**Setup:**
+```bash
+npx @anthropic-ai/mcp-config add @anthropic-ai/mcp-server-playwright
+```
+
+Or manually add to your MCP configuration:
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-server-playwright"]
+    }
+  }
+}
+```
+
+**Documentation:** https://github.com/anthropics/mcp-server-playwright
+
+#### 2. Context7
+
+Enhanced context awareness server for accessing up-to-date library documentation and code examples.
+
+**Setup:**
+```bash
+npx @anthropic-ai/mcp-config add @context7/mcp-server
+```
+
+Or manually add to your MCP configuration:
+```json
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}
+```
+
+**Documentation:** https://context7.com/docs
+
+#### 3. Chrome DevTools
+
+Debugging and development tools integration for inspecting page elements, network requests, and console output.
+
+**Setup:**
+```bash
+npx @anthropic-ai/mcp-config add @anthropic-ai/mcp-server-chrome-devtools
+```
+
+Or manually add to your MCP configuration:
+```json
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-server-chrome-devtools"]
+    }
+  }
+}
+```
+
+**Documentation:** https://github.com/anthropics/mcp-server-chrome-devtools
+
+### Why These Tools Are Required
+
+These MCP servers enable AI coding agents to:
+
+- **Playwright**: Interact with the browser to test slide rendering, navigation, animations, and export functionality
+- **Context7**: Access current documentation for React, Recharts, and other dependencies to ensure best practices
+- **Chrome DevTools**: Debug issues, inspect the DOM, monitor network requests, and view console output in real-time
+
+Using these tools ensures that AI-assisted contributions meet the same quality standards as manual contributions and can be properly validated before submission.
+
 ## License
 
 By contributing, you agree that your contributions will be licensed under its MIT License.
