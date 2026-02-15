@@ -1,0 +1,19 @@
+name: "Repo Traffic Archive"
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run GitHub Repo Stats
+        uses: jgehrcke/github-repo-stats@306db38ad131cab2aa5f2cd3062bf6f8aa78c1aa # v1.4.2
+        with:
+          repository: ${{ github.repository }}
+          ghtoken: ${{ secrets.TRAFFIC_TOKEN }}
+          databranch: github-repo-stats
