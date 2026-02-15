@@ -2,12 +2,6 @@
 import { render, screen } from '@testing-library/react';
 import MarkdownSlide from './MarkdownSlide';
 
-// Mock console.log to avoid noise in tests
-const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
-afterAll(() => {
-  consoleSpy.mockRestore();
-});
 
 describe('MarkdownSlide', () => {
   describe('rendering', () => {
@@ -224,18 +218,6 @@ describe('MarkdownSlide', () => {
 
       expect(container.querySelector('.prose')).toBeInTheDocument();
       expect(container.querySelector('.prose-lg')).toBeInTheDocument();
-    });
-  });
-
-  describe('debug logging', () => {
-    it('logs slide activation status', () => {
-      render(
-        <MarkdownSlide content="# Debug Test" index={0} isActive={true} />
-      );
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Slide isActive: true')
-      );
     });
   });
 

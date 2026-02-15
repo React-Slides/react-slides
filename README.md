@@ -69,7 +69,7 @@ Your first slide
 - Point 2
 `;
 
-  return <SlideDeck markdown={markdown} />;
+  return <SlideDeck markdownContent={markdown} />;
 }
 ```
 
@@ -273,7 +273,7 @@ Click the "Export to PDF" button (next to "Edit Slides") to download your presen
 * Export time: \~2-5 seconds for standard presentations
 * Ensures compatibility across browsers
 
-**[📚 PDF Export Feature Design Documentation](https://docs.google.com/document/d/1QT3zSlPfKJpMs9uOn9FKl67sU8j7XEB8POLNgI-wV3A/edit?usp=sharing)**  
+**[PDF Export Feature Design Documentation](./docs/pdf-export-design.md)**
 For detailed technical insights, design decisions, and future enhancements.
 
 ---
@@ -297,3 +297,11 @@ Verified functional in:
 * Firefox
 * Safari
 * Edge
+
+---
+
+## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) with the [Commons Clause](https://commonsclause.com/) condition.
+
+This means you are free to use, modify, and distribute this software, but you **may not sell** it or offer it as a paid service. See the [LICENSE](./LICENSE) file for full details.

@@ -47,7 +47,6 @@ export default defineConfig({
 
         // Utilities
         'js-yaml',
-        'dompurify',
       ],
     },
     outDir: 'dist',

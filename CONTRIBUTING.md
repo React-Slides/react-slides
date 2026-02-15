@@ -58,4 +58,4 @@ If you find a bug, please create an issue on GitHub. include as much detail as p
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By contributing, you agree that your contributions will be licensed under the MIT License with the Commons Clause condition. See the [LICENSE](./LICENSE) file for details.

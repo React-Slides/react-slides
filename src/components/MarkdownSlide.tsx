@@ -6,10 +6,7 @@ import rehypeKatex from 'rehype-katex';
 // Note: katex CSS must be imported by the consumer app
 import { MarkdownSlideProps } from '../types';
 
-const MarkdownSlide: React.FC<MarkdownSlideProps> = ({ content, isActive }) => {
-  // Add console.log to debug when a slide becomes active
-  console.log(`Slide isActive: ${isActive}, content starts with: ${content.substring(0, 30)}`);
-
+const MarkdownSlide: React.FC<MarkdownSlideProps> = ({ content, isActive: _isActive }) => {
   return (
     <div className="w-full">
       <ReactMarkdown
