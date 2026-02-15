@@ -2,7 +2,7 @@
   "name": "@str-ventures/react-slides",
   "version": "0.1.0",
   "type": "module",
-  "license": "MIT",
+  "license": "MIT WITH Commons-Clause",
   "description": "A markdown-driven presentation tool for creating interactive slide decks",
   "keywords": [
     "react",
