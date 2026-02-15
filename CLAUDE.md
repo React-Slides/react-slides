@@ -6,16 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run dev          # Start development server (http://localhost:5173)
-npm run build        # TypeScript check + Vite build
+npm run build        # TypeScript check + Vite build (demo app)
+npm run build:lib    # TypeScript check + library build (npm package)
+npm run build:demo   # TypeScript check + demo app build
 npm run typecheck    # TypeScript type checking only (tsc --noEmit)
 npm run preview      # Preview production build
+npm test             # Run tests in watch mode (vitest)
+npm run test:run     # Run tests once
+npm run test:coverage # Run tests with coverage report
 ```
 
-Note: No test framework is currently configured.
+Tests use vitest + jsdom + @testing-library/react. Test files live alongside source files as `*.test.ts(x)`. Run a single test file with `npx vitest run src/utils/parseSlideContent.test.ts`.
 
 ## Architecture
 
-React Slides is a markdown-driven presentation tool. Users write slides in markdown (separated by `---`), and the app renders them as an interactive slide deck with navigation, animations, charts, and export capabilities.
+React Slides is a markdown-driven presentation tool **and** a publishable npm library (`@str-ventures/react-slides`). Users write slides in markdown (separated by `---`), and the app renders them as an interactive slide deck with navigation, animations, charts, and export capabilities.
+
+### Dual Build System
+
+- `vite.config.ts` - Demo app build (serves `index.html`)
+- `vite.config.lib.ts` - Library build (ESM-only, entry: `src/index.ts`, externalizes all dependencies)
+- `vite.config.demo.ts` - Demo app build variant
+
+The library entry point `src/index.ts` defines the public API: `SlideDeck`, `MarkdownSlide`, `ChartRenderer`, `AnimationWrapper`, `MarkdownForm`, `TemplatePicker`, `MathVisualRenderer`, plus utility functions and types.
 
 ### Data Flow
 
@@ -42,6 +55,7 @@ React Slides is a markdown-driven presentation tool. Users write slides in markd
 ```
 App
 ├── MarkdownForm (editing mode)
+│   └── TemplatePicker (preset slide templates)
 └── SlideDeck (presentation mode)
     ├── MarkdownSlide (ReactMarkdown with remark-gfm)
     ├── ChartRenderer (Recharts: bar/line/pie)
@@ -100,38 +114,22 @@ layout: split|flip
 interactive: true
 ```
 
-#### Math Visual Block Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `type` | string | required | Visualization type (see below) |
-| `equation` | string | required | KaTeX equation to display |
-| `values` | array | varies | Data for visualization |
-| `layout` | string | `split` | `split` (side-by-side) or `flip` (click to flip card) |
-| `interactive` | boolean | `true` | Enable sliders/inputs (web only) |
-| `title` | string | optional | Title above visualization |
-| `func` | string | optional | Function expression for function-plot/integral-area |
-| `domain` | [number, number] | optional | X-axis range for function plots |
-| `bounds` | [number, number] | optional | Integration bounds for integral-area |
-
-#### Visualization Types
-
-- `matrix-2x2`: Color-coded 2x2 matrix grid with editable cells
-- `determinant`: Matrix with ad-bc formula breakdown and result
-- `matrix-multiplication`: Matrix × vector calculation with step-by-step
-- `transformation`: Canvas-based geometric transformation visualization
-- `function-plot`: Interactive function graphing with Recharts
-- `integral-area`: Function curve with shaded integral area
-
 Note: Only one special block (`chart`, `animate`, or `math-visual`) per slide.
 
 ### Export Utilities
 
-- `exportSlidesToPDF.ts` - Uses html2canvas + jsPDF
-- `exportSlidesToPPTX.ts` - Uses pptxgenjs for PowerPoint/Keynote export
+- `exportSlidesToPDF.ts` - Uses html2canvas + jsPDF (optional peer deps)
+- `exportSlidesToPPTX.ts` - Uses pptxgenjs for PowerPoint/Keynote export (optional peer dep)
+- `PDFSlideDeck.tsx` - Internal component used by export utils via dynamic import (not exported in public API)
 
 ### Path Aliases
 
 Configured in both tsconfig.json and vite.config.ts:
 - `src/*` → `./src/*`
 - `components/*` → `./src/components/*`
+- `common/*` → `./src/components/common/*` (tsconfig only)
+- `slides/*` → `./src/components/slides/*` (tsconfig only)
+
+### Key Types
+
+Core types are in `src/types.ts` (component props, form state, toast) and `src/utils/parseSlideContent.ts` (ParsedSlide, SlideBlock, MathVisualConfig).
