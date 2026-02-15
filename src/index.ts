@@ -24,6 +24,9 @@ export { getTheme, themeButtons } from './utils/themes';
 export { TEMPLATES, getTemplateById, getTemplatesByCategory } from './constants/templates';
 export { EXAMPLE_MARKDOWN } from './constants/exampleMarkdown';
 
+// Export version info
+export { VERSION, SEMVER, BUILD_NUMBER } from './generated/version';
+
 // Export types
 export type {
   MarkdownSlide as MarkdownSlideType,

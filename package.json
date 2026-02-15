@@ -46,9 +46,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:lib": "tsc && vite build --config vite.config.lib.ts",
-    "build:demo": "tsc && vite build --config vite.config.demo.ts",
+    "build": "node scripts/bump-build.js && tsc && vite build",
+    "build:lib": "node scripts/bump-build.js && tsc && vite build --config vite.config.lib.ts",
+    "build:demo": "node scripts/bump-build.js && tsc && vite build --config vite.config.demo.ts",
     "preview": "vite preview",
     "cloudflare-build": "npm install @rollup/rollup-linux-x64-gnu && tsc && vite build",
     "typecheck": "tsc --noEmit",
