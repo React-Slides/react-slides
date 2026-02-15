@@ -30,3 +30,13 @@
 - [x] `npm run test:run` — all 301 tests pass
 - [x] `npm audit` — 0 vulnerabilities
 - [x] Review `dist/` output — no `src/` included
+
+---
+
+# Post-Release
+
+## GitHub Pages Stats Dashboard
+
+- [ ] Add `TRAFFIC_TOKEN` repo secret (PAT with `repo` scope) to enable `.github/workflows/traffic-archive.yml`
+- [ ] Serve stats report at `react-slides.github.io/react-slides/stats/` — modify `deploy-pages.yml` to checkout `github-repo-stats` branch and copy `{owner}/{repo}/latest-report/` into `dist-demo/stats/` before uploading the Pages artifact
+- [ ] Un-ignore `CLAUDE.md` from `.gitignore` so the Pages/stats documentation is tracked in git
