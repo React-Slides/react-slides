@@ -16,9 +16,9 @@ dist-ssr
 # Test coverage output
 coverage/
 
-# Claude Code (keep skills and agents, ignore local settings)
-.claude/settings.local.json
-.claude/*.local.*
+# Claude Code
+.claude/
+CLAUDE.md
 .mcp.json
 
 # Playwright MCP
