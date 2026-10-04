@@ -71,6 +71,9 @@ Your first slide
 
 ### Development Setup
 
+> [!IMPORTANT]
+> Developing this repo requires **npm 11+** (`npm install -g npm@11`). npm 10 can't resolve the dependency tree, and `package.json` blocks it with an `EBADDEVENGINES` error. See [CONTRIBUTING.md](CONTRIBUTING.md#prerequisites) for details. Installing the published library works with any npm version.
+
 ```bash
 git clone https://github.com/STR-Ventures/react-slides.git
 cd react-slides
