@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Renamed the package from `@str-ventures/react-slides` to `@react-slides/react-slides`.** GitHub Packages requires the npm scope to match the repository owner (`React-Slides`). Update your imports and change the `.npmrc` scope line to `@react-slides:registry=https://npm.pkg.github.com`.
+- Publishing runs once per published GitHub release (not on drafts or tag pushes), checks the release tag matches `package.json`, and runs typecheck and tests first.
+
 ## [1.0.0] - 2026-02-15
 
 ### Added
