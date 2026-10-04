@@ -1,4 +1,5 @@
 import { ThemeName, getTheme } from './themes';
+import { renderSlidesForExport, EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from './renderSlidesForExport';
 
 /**
  * Export slides to PPTX using image-based approach (same as PDF export)
@@ -30,48 +31,29 @@ export const exportSlidesToPPTX = async (
     );
   }
 
+  // Get theme colors for background
+  const bgColor = getTheme(theme)['--slide-bg'];
+
+  const { slides, cleanup } = await renderSlidesForExport(markdownContent, theme);
+
   try {
-    // Get theme colors for background
-    const themeColors = getTheme(theme);
-    const bgColor = themeColors['--slide-bg'];
-
-    // Create temporary container for rendering
-    const tempContainer = document.createElement('div');
-    tempContainer.style.position = 'absolute';
-    tempContainer.style.left = '-9999px';
-    tempContainer.style.top = '0';
-    document.body.appendChild(tempContainer);
-
-    // Render PDFSlideDeck component with theme (reuse for consistent rendering)
-    const { createRoot } = await import('react-dom/client');
-    const { default: PDFSlideDeck } = await import('../components/PDFSlideDeck');
-    const { createElement } = await import('react');
-
-    const root = createRoot(tempContainer);
-    root.render(createElement(PDFSlideDeck, { markdownContent, theme }));
-
-    // Wait for rendering to complete (charts need time to render)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Query all slide containers from the rendered component
-    const slides = tempContainer.querySelectorAll('.slide-container');
-
     if (slides.length === 0) {
-      console.warn('No slides found with .slide-container class');
-      root.unmount();
-      document.body.removeChild(tempContainer);
-      return;
+      throw new Error('No slides to export');
     }
 
-    // Create PowerPoint presentation
+    // Create PowerPoint presentation with a layout matching the rendered slide's
+    // aspect ratio, so full-slide images aren't stretched
     const pptx = new PptxGenJS();
-    pptx.layout = 'LAYOUT_16x9';
+    pptx.defineLayout({
+      name: 'REACT_SLIDES',
+      width: 10,
+      height: (10 * EXPORT_SLIDE_HEIGHT) / EXPORT_SLIDE_WIDTH,
+    });
+    pptx.layout = 'REACT_SLIDES';
     pptx.title = 'React Slides Export';
     pptx.author = 'React Slides';
 
-    for (let i = 0; i < slides.length; i++) {
-      const slideElement = slides[i] as HTMLElement;
-
+    for (const slideElement of slides) {
       // Capture slide as canvas image with theme background
       const canvas = await html2canvas(slideElement, {
         backgroundColor: bgColor,
@@ -80,13 +62,10 @@ export const exportSlidesToPPTX = async (
         allowTaint: false
       });
 
-      // Convert canvas to base64 image data
       const imgData = canvas.toDataURL('image/png');
 
-      // Add slide to presentation
-      const slide = pptx.addSlide();
-
       // Add image to fill the entire slide
+      const slide = pptx.addSlide();
       slide.addImage({
         data: imgData,
         x: 0,
@@ -100,16 +79,13 @@ export const exportSlidesToPPTX = async (
     const timestamp = new Date().toISOString().split('T')[0];
     const filename = `slides_${timestamp}.pptx`;
 
-    // Save the PPTX file
     await pptx.writeFile({ fileName: filename });
 
     console.log(`PPTX exported successfully: ${filename}`);
-
-    // Cleanup
-    root.unmount();
-    document.body.removeChild(tempContainer);
   } catch (error) {
     console.error('Error exporting slides to PPTX:', error);
     throw error;
+  } finally {
+    cleanup();
   }
 };
