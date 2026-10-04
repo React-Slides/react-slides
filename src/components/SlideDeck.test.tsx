@@ -359,4 +359,51 @@ type: fade-in
       removeEventListenerSpy.mockRestore();
     });
   });
+
+  describe('malformed content', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    afterAll(() => {
+      errorSpy.mockRestore();
+      warnSpy.mockRestore();
+    });
+
+    it('does not crash on an empty chart block', () => {
+      render(<SlideDeck markdownContent={'# Title\n```chart\n```'} />);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Title');
+    });
+
+    it('does not crash on an empty animate block', () => {
+      render(<SlideDeck markdownContent={'# Title\n```animate\n```'} />);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Title');
+    });
+
+    it('does not crash on a pie chart without data', () => {
+      render(<SlideDeck markdownContent={'# Title\n```chart\ntype: pie\n```'} />);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Title');
+    });
+  });
+
+  describe('content updates', () => {
+    it('clamps the current slide when the deck shrinks', () => {
+      const { rerender } = render(<SlideDeck markdownContent={'# One\n---\n# Two\n---\n# Three'} />);
+
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+      expect(screen.getByText('Three')).toBeInTheDocument();
+
+      rerender(<SlideDeck markdownContent={'# Only'} />);
+      expect(screen.getByText('Only')).toBeInTheDocument();
+    });
+
+    it('keeps the current slide when it is still in range', () => {
+      const { rerender } = render(<SlideDeck markdownContent={'# One\n---\n# Two'} />);
+
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+      rerender(<SlideDeck markdownContent={'# One\n---\n# Two edited\n---\n# Three'} />);
+
+      expect(screen.getByText('Two edited')).toBeInTheDocument();
+    });
+  });
 });

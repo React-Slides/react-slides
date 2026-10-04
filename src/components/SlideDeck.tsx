@@ -5,6 +5,7 @@ import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
+import SlideErrorBoundary from './SlideErrorBoundary';
 import { SlideDeckProps } from '../types';
 import { parseSlideContent, ParsedSlide } from '../utils/parseSlideContent';
 import { getTheme } from '../utils/themes';
@@ -23,6 +24,8 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
         .map(slide => parseSlideContent(slide))
         .filter(parsed => parsed.blocks.length > 0);
       setSlides(parsedSlides);
+      // Keep the current index valid if the new deck has fewer slides
+      setCurrentSlide(prev => Math.min(prev, Math.max(parsedSlides.length - 1, 0)));
     }
   }, [markdownContent]);
 
@@ -81,41 +84,43 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
         {/* Single container for all slide content */}
         <div className="absolute inset-0 p-6 flex flex-col justify-center">
           <div className="max-w-4xl mx-auto w-full">
-            {/* Render markdown content if present */}
-            {markdownBlock && (
-              <div className="mb-0">
-                <MarkdownSlide
-                  index={0}
-                  content={markdownBlock.content}
-                  isActive={true}
-                />
-              </div>
-            )}
+            <SlideErrorBoundary resetKey={currentParsedSlide}>
+              {/* Render markdown content if present */}
+              {markdownBlock && (
+                <div className="mb-0">
+                  <MarkdownSlide
+                    index={0}
+                    content={markdownBlock.content}
+                    isActive={true}
+                  />
+                </div>
+              )}
 
-            {/* Render chart if present */}
-            {chartBlock && (
-              <div className="relative z-20">
-                <ChartRenderer config={chartBlock.config} />
-              </div>
-            )}
+              {/* Render chart if present */}
+              {chartBlock && (
+                <div className="relative z-20">
+                  <ChartRenderer config={chartBlock.config} />
+                </div>
+              )}
 
-            {/* Render animation if present */}
-            {animateBlock && (
-              <div className="relative z-20">
-                <AnimationWrapper config={animateBlock.config}>
-                  <div className="text-center p-8">
-                    <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
-                  </div>
-                </AnimationWrapper>
-              </div>
-            )}
+              {/* Render animation if present */}
+              {animateBlock && (
+                <div className="relative z-20">
+                  <AnimationWrapper config={animateBlock.config}>
+                    <div className="text-center p-8">
+                      <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
+                    </div>
+                  </AnimationWrapper>
+                </div>
+              )}
 
-            {/* Render math-visual if present */}
-            {mathVisualBlock && (
-              <div className="relative z-20">
-                <MathVisualRenderer config={mathVisualBlock.config} />
-              </div>
-            )}
+              {/* Render math-visual if present */}
+              {mathVisualBlock && (
+                <div className="relative z-20">
+                  <MathVisualRenderer config={mathVisualBlock.config} />
+                </div>
+              )}
+            </SlideErrorBoundary>
           </div>
         </div>
 

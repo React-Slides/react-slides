@@ -71,7 +71,14 @@ export function parseSlideContent(raw: string): ParsedSlide {
     let config: any = {};
 
     try {
-      config = yaml.load(blockBody);
+      const loaded = yaml.load(blockBody);
+      // Empty blocks load as undefined and plain text as a string; renderers
+      // expect an object, so anything else falls back to an empty config
+      if (loaded && typeof loaded === 'object' && !Array.isArray(loaded)) {
+        config = loaded;
+      } else if (loaded !== undefined && loaded !== null) {
+        console.warn(`Ignoring ${blockType} block: expected YAML key/value config`);
+      }
     } catch (e) {
       console.warn(`Failed to parse ${blockType} block:`, e);
     }

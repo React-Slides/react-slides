@@ -3,6 +3,7 @@ import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
+import SlideErrorBoundary from './SlideErrorBoundary';
 import { parseSlideContent } from '../utils/parseSlideContent';
 import { getTheme, ThemeName } from '../utils/themes';
 
@@ -48,41 +49,43 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
             } as React.CSSProperties}
           >
             <div className="max-w-4xl mx-auto w-full">
-              {/* Render markdown content */}
-              {markdownBlock && (
-                <div className="mb-8">
-                  <MarkdownSlide
-                    index={index}
-                    content={markdownBlock.content}
-                    isActive={true}
-                  />
-                </div>
-              )}
+              <SlideErrorBoundary>
+                {/* Render markdown content */}
+                {markdownBlock && (
+                  <div className="mb-8">
+                    <MarkdownSlide
+                      index={index}
+                      content={markdownBlock.content}
+                      isActive={true}
+                    />
+                  </div>
+                )}
 
-              {/* Render chart in final state */}
-              {chartBlock && (
-                <div className="relative">
-                  <ChartRenderer config={chartBlock.config} />
-                </div>
-              )}
+                {/* Render chart in final state */}
+                {chartBlock && (
+                  <div className="relative">
+                    <ChartRenderer config={chartBlock.config} />
+                  </div>
+                )}
 
-              {/* Render animation in final state (static) */}
-              {animateBlock && (
-                <div className="relative">
-                  <AnimationWrapper config={animateBlock.config}>
-                    <div className="text-center p-8">
-                      <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
-                    </div>
-                  </AnimationWrapper>
-                </div>
-              )}
+                {/* Render animation in final state (static) */}
+                {animateBlock && (
+                  <div className="relative">
+                    <AnimationWrapper config={animateBlock.config}>
+                      <div className="text-center p-8">
+                        <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
+                      </div>
+                    </AnimationWrapper>
+                  </div>
+                )}
 
-              {/* Render math-visual in export mode (static, no flip) */}
-              {mathVisualBlock && (
-                <div className="relative">
-                  <MathVisualRenderer config={mathVisualBlock.config} isExport={true} />
-                </div>
-              )}
+                {/* Render math-visual in export mode (static, no flip) */}
+                {mathVisualBlock && (
+                  <div className="relative">
+                    <MathVisualRenderer config={mathVisualBlock.config} isExport={true} />
+                  </div>
+                )}
+              </SlideErrorBoundary>
             </div>
           </div>
         );

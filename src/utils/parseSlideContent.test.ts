@@ -359,9 +359,9 @@ type: fade-in
 
       expect(result.blocks).toHaveLength(2);
       expect(result.blocks[1].type).toBe('chart');
-      // Empty YAML returns undefined from yaml.load()
+      // Empty YAML loads as undefined; it is normalized to an empty config so renderers don't crash
       const chartBlock = result.blocks[1] as { type: 'chart'; config: any };
-      expect(chartBlock.config).toBeUndefined();
+      expect(chartBlock.config).toEqual({});
     });
 
     it('should handle special block only (no other markdown)', () => {
@@ -445,6 +445,34 @@ type: bounce
       expect(withNotes).toHaveProperty('notes');
       expect(withNotes.notes).toBe('Notes here');
       expect(withoutNotes.notes).toBeUndefined();
+    });
+  });
+
+  describe('malformed block config', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    afterAll(() => {
+      warnSpy.mockRestore();
+    });
+
+    it('returns an empty config object for an empty animate block', () => {
+      const result = parseSlideContent('```animate\n```');
+      expect(result.blocks[1]).toEqual({ type: 'animate', config: {} });
+    });
+
+    it('returns an empty config object when the block is plain text', () => {
+      const result = parseSlideContent('```chart\njust some text\n```');
+      expect(result.blocks[1]).toEqual({ type: 'chart', config: {} });
+    });
+
+    it('returns an empty config object when the block is a YAML list', () => {
+      const result = parseSlideContent('```math-visual\n- 1\n- 2\n```');
+      expect(result.blocks[1]).toEqual({ type: 'math-visual', config: {} });
+    });
+
+    it('returns an empty config object when the YAML is invalid', () => {
+      const result = parseSlideContent('```chart\ntype: [unclosed\n```');
+      expect(result.blocks[1]).toEqual({ type: 'chart', config: {} });
     });
   });
 });
