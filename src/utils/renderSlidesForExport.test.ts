@@ -30,6 +30,24 @@ describe('renderSlidesForExport', () => {
     expect(document.body.contains(slides[0])).toBe(false);
   });
 
+  it('returns an empty deck without waiting for the timeout', async () => {
+    vi.resetModules();
+    vi.doMock('../components/PDFSlideDeck', async () => {
+      const React = await import('react');
+      return { default: () => React.createElement('div', { className: 'pdf-export-container' }) };
+    });
+    const { renderSlidesForExport: render } = await import('./renderSlidesForExport');
+
+    const start = Date.now();
+    const { slides, cleanup } = await render('', 'light', { timeoutMs: 5000, settleMs: 5000 });
+
+    expect(slides).toHaveLength(0);
+    expect(Date.now() - start).toBeLessThan(1000);
+    cleanup();
+    vi.doUnmock('../components/PDFSlideDeck');
+    vi.resetModules();
+  });
+
   it('waits for lazy-loaded visualizations instead of capturing the loading fallback', async () => {
     const markdown = '# Plot\n```math-visual\ntype: function-plot\nequation: "$$x^2$$"\nfunc: x^2\n```';
     const { slides, cleanup } = await renderSlidesForExport(markdown, 'light', FAST);
