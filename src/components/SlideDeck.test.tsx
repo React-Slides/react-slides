@@ -464,6 +464,14 @@ type: fade-in
       expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('50%');
     });
 
+    it('does not render CRLF frontmatter as a slide', () => {
+      const { container } = render(<SlideDeck markdownContent={md.replace(/\n/g, '\r\n')} />);
+
+      expect(screen.queryByText(/theme: dark/)).not.toBeInTheDocument();
+      expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('50%');
+      expect((container.firstChild as HTMLElement).style.getPropertyValue('--slide-bg')).toBe('#1a1a1a');
+    });
+
     it('applies the frontmatter theme when no theme prop is given', () => {
       const { container } = render(<SlideDeck markdownContent={md} />);
 
