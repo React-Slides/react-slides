@@ -57,10 +57,11 @@ describe('SlideDeck', () => {
 
 # Slide 2`;
 
-      render(<SlideDeck markdownContent={content} />);
+      const { container } = render(<SlideDeck markdownContent={content} />);
 
       // Should only have 2 slides, not 3
       expect(screen.getByText('Slide 1')).toBeInTheDocument();
+      expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('50%');
     });
   });
 
@@ -404,6 +405,81 @@ type: fade-in
       rerender(<SlideDeck markdownContent={'# One\n---\n# Two edited\n---\n# Three'} />);
 
       expect(screen.getByText('Two edited')).toBeInTheDocument();
+    });
+  });
+
+  describe('keyboard navigation from form fields', () => {
+    const content = '# One\n---\n# Two';
+
+    it.each(['input', 'textarea', 'select'])('ignores arrow keys typed into a %s', tag => {
+      render(<SlideDeck markdownContent={content} />);
+      const field = document.createElement(tag);
+      document.body.appendChild(field);
+
+      fireEvent.keyDown(field, { key: 'ArrowRight' });
+
+      expect(screen.getByText('One')).toBeInTheDocument();
+      field.remove();
+    });
+
+    it('ignores arrow keys in contentEditable elements', () => {
+      render(<SlideDeck markdownContent={content} />);
+      const editable = document.createElement('div');
+      editable.contentEditable = 'true';
+      // jsdom does not implement isContentEditable
+      Object.defineProperty(editable, 'isContentEditable', { value: true });
+      document.body.appendChild(editable);
+
+      fireEvent.keyDown(editable, { key: 'ArrowRight' });
+
+      expect(screen.getByText('One')).toBeInTheDocument();
+      editable.remove();
+    });
+
+    it.each(['altKey', 'ctrlKey', 'metaKey'])('ignores arrow keys with %s held', modifier => {
+      render(<SlideDeck markdownContent={content} />);
+
+      fireEvent.keyDown(window, { key: 'ArrowRight', [modifier]: true });
+
+      expect(screen.getByText('One')).toBeInTheDocument();
+    });
+
+    it('still navigates when arrow keys come from a button', () => {
+      render(<SlideDeck markdownContent={content} />);
+
+      fireEvent.keyDown(screen.getAllByRole('button')[0], { key: 'ArrowRight' });
+
+      expect(screen.getByText('Two')).toBeInTheDocument();
+    });
+  });
+
+  describe('frontmatter', () => {
+    const md = '---\ntheme: dark\n---\n# One\n---\n# Two';
+
+    it('does not render frontmatter as a slide', () => {
+      const { container } = render(<SlideDeck markdownContent={md} />);
+
+      expect(screen.getByText('One')).toBeInTheDocument();
+      expect(screen.queryByText(/theme: dark/)).not.toBeInTheDocument();
+      expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('50%');
+    });
+
+    it('applies the frontmatter theme when no theme prop is given', () => {
+      const { container } = render(<SlideDeck markdownContent={md} />);
+
+      expect((container.firstChild as HTMLElement).style.getPropertyValue('--slide-bg')).toBe('#1a1a1a');
+    });
+
+    it('lets an explicit theme prop override the frontmatter theme', () => {
+      const { container } = render(<SlideDeck markdownContent={md} theme="light" />);
+
+      expect((container.firstChild as HTMLElement).style.getPropertyValue('--slide-bg')).toBe('#ffffff');
+    });
+
+    it('does not split on --- inside code blocks', () => {
+      const { container } = render(<SlideDeck markdownContent={'# One\n```yaml\na: 1\n---\nb: 2\n```'} />);
+
+      expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('100%');
     });
   });
 });

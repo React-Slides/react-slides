@@ -241,4 +241,29 @@ data:
       expect(screen.getByText('Mixed Chart')).toBeInTheDocument();
     });
   });
+
+  describe('frontmatter', () => {
+    const md = '---\ntheme: dark\n---\n# One\n---\n# Two';
+
+    it('does not render frontmatter as a slide', () => {
+      const { container } = render(<PDFSlideDeck markdownContent={md} />);
+
+      expect(container.querySelectorAll('.slide-container')).toHaveLength(2);
+      expect(screen.queryByText(/theme: dark/)).not.toBeInTheDocument();
+    });
+
+    it('applies the frontmatter theme when no theme prop is given', () => {
+      const { container } = render(<PDFSlideDeck markdownContent={md} />);
+      const slide = container.querySelector('.slide-container') as HTMLElement;
+
+      expect(slide.style.getPropertyValue('--slide-bg')).toBe('#1a1a1a');
+    });
+
+    it('lets an explicit theme prop override the frontmatter theme', () => {
+      const { container } = render(<PDFSlideDeck markdownContent={md} theme="light" />);
+      const slide = container.querySelector('.slide-container') as HTMLElement;
+
+      expect(slide.style.getPropertyValue('--slide-bg')).toBe('#ffffff');
+    });
+  });
 });

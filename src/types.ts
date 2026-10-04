@@ -1,3 +1,5 @@
+import type { ThemeName } from './utils/themes';
+
 // Slide structure from markdown
 export interface MarkdownSlide {
   content: string;
@@ -14,7 +16,8 @@ export interface MarkdownSlideProps {
 // Props for the SlideDeck component
 export interface SlideDeckProps {
   markdownContent?: string;
-  theme?: 'light' | 'dark' | 'corporate' | 'warm' | 'nature' | 'highcontrast';
+  // Overrides the theme set in the markdown's frontmatter
+  theme?: ThemeName;
 }
 
 // Form state for markdown input

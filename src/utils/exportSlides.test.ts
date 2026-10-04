@@ -125,3 +125,21 @@ describe('exportSlidesToPPTX', () => {
     expect(cleanup).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('export theme resolution', () => {
+  it('uses the frontmatter theme when no theme is passed', async () => {
+    mockSlides(1);
+    await exportSlidesToPDF('---\ntheme: dark\n---\n# a');
+
+    expect(renderSlidesForExport).toHaveBeenCalledWith(expect.any(String), 'dark');
+    expect(html2canvas).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ backgroundColor: '#1a1a1a' }));
+  });
+
+  it('lets an explicit theme override the frontmatter theme', async () => {
+    mockSlides(1);
+    await exportSlidesToPPTX('---\ntheme: dark\n---\n# a', 'light');
+
+    expect(renderSlidesForExport).toHaveBeenCalledWith(expect.any(String), 'light');
+    expect(html2canvas).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ backgroundColor: '#ffffff' }));
+  });
+});

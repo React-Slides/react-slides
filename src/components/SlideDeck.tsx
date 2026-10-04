@@ -1,5 +1,5 @@
 // SlideDeck.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
@@ -7,27 +7,32 @@ import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
 import SlideErrorBoundary from './SlideErrorBoundary';
 import { SlideDeckProps } from '../types';
-import { parseSlideContent, ParsedSlide } from '../utils/parseSlideContent';
+import { parseSlides, ParsedSlide } from '../utils/parseSlideContent';
+import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme } from '../utils/themes';
 
-const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
+// Arrow keys typed into form fields (e.g. a visualization's f(x) input) shouldn't change slides
+const isEditableTarget = (target: EventTarget | null): boolean => {
+  if (!(target instanceof HTMLElement)) return false;
+  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+};
+
+const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slides, setSlides] = useState<ParsedSlide[]>([]);
+  const { theme: frontmatterTheme, content } = useMemo(() => parseFrontmatter(markdownContent ?? ''), [markdownContent]);
 
-  // Get theme styles as CSS variables
-  const themeStyles = getTheme(theme);
+  // Get theme styles as CSS variables; an explicit prop overrides the frontmatter theme
+  const themeStyles = getTheme(theme ?? frontmatterTheme);
 
   useEffect(() => {
     if (markdownContent) {
-      const rawSlides = markdownContent.split(/^---$/m);
-      const parsedSlides = rawSlides
-        .map(slide => parseSlideContent(slide))
-        .filter(parsed => parsed.blocks.length > 0);
+      const parsedSlides = parseSlides(content);
       setSlides(parsedSlides);
       // Keep the current index valid if the new deck has fewer slides
       setCurrentSlide(prev => Math.min(prev, Math.max(parsedSlides.length - 1, 0)));
     }
-  }, [markdownContent]);
+  }, [markdownContent, content]);
 
   const nextSlide = useCallback(() => {
     if (currentSlide < slides.length - 1) setCurrentSlide(prev => prev + 1);
@@ -40,6 +45,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isEditableTarget(e.target)) return;
       if (e.key === 'ArrowRight') nextSlide();
       if (e.key === 'ArrowLeft') prevSlide();
     };

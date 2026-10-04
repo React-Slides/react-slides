@@ -4,7 +4,8 @@ import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
 import SlideErrorBoundary from './SlideErrorBoundary';
-import { parseSlideContent } from '../utils/parseSlideContent';
+import { parseSlides } from '../utils/parseSlideContent';
+import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme, ThemeName } from '../utils/themes';
 import { EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from '../utils/renderSlidesForExport';
 
@@ -13,16 +14,14 @@ interface PDFSlideDeckProps {
   theme?: ThemeName;
 }
 
-const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
-  // Get theme styles as CSS variables
-  const themeStyles = getTheme(theme);
-
+const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme }) => {
   // Parse all slides at once for PDF export
   // Notes are automatically excluded since we only render the blocks
-  const rawSlides = markdownContent.split(/^---$/m);
-  const slides = rawSlides
-    .map(slide => parseSlideContent(slide))
-    .filter(parsed => parsed.blocks.length > 0);
+  const { theme: frontmatterTheme, content } = parseFrontmatter(markdownContent);
+  const slides = parseSlides(content);
+
+  // Get theme styles as CSS variables; an explicit prop overrides the frontmatter theme
+  const themeStyles = getTheme(theme ?? frontmatterTheme);
 
   return (
     <div className="pdf-export-container">

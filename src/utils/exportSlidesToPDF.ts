@@ -1,9 +1,10 @@
 import { ThemeName, getTheme } from './themes';
+import { parseFrontmatter } from './parseFrontmatter';
 import { renderSlidesForExport, EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from './renderSlidesForExport';
 
 export const exportSlidesToPDF = async (
   markdownContent: string,
-  theme: ThemeName = 'light'
+  theme?: ThemeName
 ): Promise<void> => {
   // Dynamic import of optional dependencies with graceful error handling
   let html2canvas: typeof import('html2canvas').default;
@@ -27,10 +28,13 @@ export const exportSlidesToPDF = async (
     );
   }
 
-  // Get theme colors for background
-  const bgColor = getTheme(theme)['--slide-bg'];
+  // An explicit theme overrides the one set in the markdown's frontmatter
+  const resolvedTheme = theme ?? parseFrontmatter(markdownContent).theme;
 
-  const { slides, cleanup } = await renderSlidesForExport(markdownContent, theme);
+  // Get theme colors for background
+  const bgColor = getTheme(resolvedTheme)['--slide-bg'];
+
+  const { slides, cleanup } = await renderSlidesForExport(markdownContent, resolvedTheme);
 
   try {
     if (slides.length === 0) {

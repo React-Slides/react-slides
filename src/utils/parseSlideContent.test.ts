@@ -1,5 +1,5 @@
 // utils/parseSlideContent.test.ts
-import { parseSlideContent } from './parseSlideContent';
+import { parseSlides, splitSlides, parseSlideContent } from './parseSlideContent';
 
 describe('parseSlideContent', () => {
   describe('plain markdown (no special blocks)', () => {
@@ -473,6 +473,55 @@ type: bounce
     it('returns an empty config object when the YAML is invalid', () => {
       const result = parseSlideContent('```chart\ntype: [unclosed\n```');
       expect(result.blocks[1]).toEqual({ type: 'chart', config: {} });
+    });
+  });
+
+  describe('splitSlides', () => {
+    it('splits on lines that are exactly ---', () => {
+      expect(splitSlides('# One\n\n---\n\n# Two')).toEqual(['# One\n', '\n# Two']);
+    });
+
+    it('handles CRLF line endings and trailing whitespace on separators', () => {
+      expect(splitSlides('# One\r\n---  \r\n# Two')).toEqual(['# One', '# Two']);
+    });
+
+    it('does not split on --- inside backtick fenced code blocks', () => {
+      const md = '# YAML\n```yaml\na: 1\n---\nb: 2\n```\n---\n# Next';
+      expect(splitSlides(md)).toEqual(['# YAML\n```yaml\na: 1\n---\nb: 2\n```', '# Next']);
+    });
+
+    it('does not split on --- inside tilde fenced code blocks', () => {
+      expect(splitSlides('~~~\n---\n~~~')).toHaveLength(1);
+    });
+
+    it('only closes a fence with the same character and at least the same length', () => {
+      const md = '````\n```\n---\n````\n---\n# Next';
+      expect(splitSlides(md)).toHaveLength(2);
+    });
+
+    it('does not treat *** or ___ horizontal rules as separators', () => {
+      expect(splitSlides('a\n\n***\n\nb\n\n___\n\nc')).toHaveLength(1);
+    });
+
+    it('does not treat longer dash runs or indented dashes as separators', () => {
+      expect(splitSlides('a\n\n-----\n\nb\n   ---\nc')).toHaveLength(1);
+    });
+  });
+
+  describe('parseSlides', () => {
+    it('drops empty slides, including a trailing separator', () => {
+      const slides = parseSlides('# One\n\n---\n\n\n\n---\n\n# Two\n\n---\n');
+      expect(slides).toHaveLength(2);
+    });
+
+    it('keeps slides that only contain a special block', () => {
+      const slides = parseSlides('# One\n---\n```chart\ntype: bar\n```');
+      expect(slides).toHaveLength(2);
+      expect(slides[1].blocks[1].type).toBe('chart');
+    });
+
+    it('keeps slides that only contain speaker notes', () => {
+      expect(parseSlides('# One\n---\n<!--notes\nRemember this\n-->')).toHaveLength(2);
     });
   });
 });

@@ -96,6 +96,48 @@ export function parseSlideContent(raw: string): ParsedSlide {
   return { blocks: [{ type: 'markdown', content: contentWithoutNotes.trim() }], notes };
 }
 
+// Matches the opening/closing line of a fenced code block (``` or ~~~, up to 3 spaces indent)
+const FENCE_REGEX = /^ {0,3}(`{3,}|~{3,})/;
 
+/**
+ * Splits deck markdown into raw slide strings on lines that are exactly `---`.
+ * Separators inside fenced code blocks are ignored. Use `***` or `___` for a
+ * horizontal rule within a slide.
+ * @param markdown Deck markdown (without frontmatter)
+ */
+export function splitSlides(markdown: string): string[] {
+  const slides: string[] = [];
+  let current: string[] = [];
+  let openFence: string | null = null;
 
+  for (const line of markdown.split(/\r?\n/)) {
+    const fence = line.match(FENCE_REGEX);
+    if (fence) {
+      if (openFence === null) {
+        openFence = fence[1];
+      } else if (fence[1][0] === openFence[0] && fence[1].length >= openFence.length) {
+        openFence = null;
+      }
+    }
 
+    if (openFence === null && /^---\s*$/.test(line)) {
+      slides.push(current.join('\n'));
+      current = [];
+    } else {
+      current.push(line);
+    }
+  }
+  slides.push(current.join('\n'));
+
+  return slides;
+}
+
+/**
+ * Splits and parses deck markdown, dropping slides with no content.
+ * @param markdown Deck markdown (without frontmatter)
+ */
+export function parseSlides(markdown: string): ParsedSlide[] {
+  return splitSlides(markdown)
+    .map(slide => parseSlideContent(slide))
+    .filter(parsed => parsed.notes !== undefined || parsed.blocks.some(block => block.type !== 'markdown' || block.content !== ''));
+}
