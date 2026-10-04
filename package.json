@@ -1,6 +1,6 @@
 {
   "name": "@react-slides/react-slides",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "license": "MIT WITH Commons-Clause",
   "description": "A markdown-driven presentation tool for creating interactive slide decks",

@@ -40,7 +40,7 @@ The package is published to **GitHub Packages**, not npmjs.com. Point the `@reac
 npm install @react-slides/react-slides
 ```
 
-> Previously published as `@str-ventures/react-slides`. Update your imports and `.npmrc` scope if you're upgrading from v0.1.0.
+> Previously published as `@str-ventures/react-slides`. Update your imports and `.npmrc` scope if you're upgrading from an earlier version. Version 2.0.0 also makes the PDF/PPTX export libraries required peer dependencies; see the [CHANGELOG](CHANGELOG.md).
 
 npm 7+ installs the peer dependencies automatically, including the PDF/PPTX export libraries. With yarn, pnpm, or older npm, install them explicitly:
 

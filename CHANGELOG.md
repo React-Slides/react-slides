@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - Unreleased
+
+### Breaking
+
+- **Renamed the package from `@str-ventures/react-slides` to `@react-slides/react-slides`.** GitHub Packages requires the npm scope to match the repository owner (`React-Slides`). Update your imports and change the `.npmrc` scope line to `@react-slides:registry=https://npm.pkg.github.com`.
+- **`html2canvas`, `jspdf` and `pptxgenjs` are now required peer dependencies** (previously optional). npm 7+ installs them automatically; with yarn, pnpm or older npm, install them explicitly. They are still loaded on demand, so they only add to your bundle when an export runs.
+- **Raised minimum peer dependency versions** to pick up security fixes: `jspdf` `^4.2.1` (jsPDF 2.x is no longer supported), `js-yaml` `^4.3.2`, `html2canvas` `^1.4.1`.
 
 ### Changed
 
-- **Renamed the package from `@str-ventures/react-slides` to `@react-slides/react-slides`.** GitHub Packages requires the npm scope to match the repository owner (`React-Slides`). Update your imports and change the `.npmrc` scope line to `@react-slides:registry=https://npm.pkg.github.com`.
+- Developing this repo now requires npm 11+ (enforced via `devEngines`). Installing the published package works with any npm version.
 - Publishing runs once per published GitHub release (not on drafts or tag pushes), checks the release tag matches `package.json`, and runs typecheck and tests first.
 
 ## [1.0.0] - 2026-02-15
