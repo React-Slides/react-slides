@@ -24,8 +24,10 @@ const POLL_INTERVAL_MS = 100;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// PDFSlideDeck mounts its wrapper and every slide in one commit, so once the wrapper
+// exists an empty deck is known to be empty and doesn't need to wait out the timeout
 const isReady = (container: HTMLElement): boolean =>
-  container.querySelector('.slide-container') !== null &&
+  container.querySelector('.pdf-export-container') !== null &&
   container.querySelector('.viz-loading') === null;
 
 export async function renderSlidesForExport(
@@ -67,9 +69,9 @@ export async function renderSlidesForExport(
       await sleep(POLL_INTERVAL_MS);
     }
 
-    await sleep(settleMs);
-
     const slides = Array.from(container.querySelectorAll<HTMLElement>('.slide-container'));
+    if (slides.length > 0) await sleep(settleMs);
+
     return { slides, cleanup };
   } catch (error) {
     cleanup();

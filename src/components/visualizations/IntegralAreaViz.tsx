@@ -51,12 +51,13 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
       }
     }
 
-    const integral = fn ? computeIntegral(fn, a, b) : 0;
+    // An invalid expression has no integral; show that instead of a misleading 0
+    const integral = fn ? computeIntegral(fn, a, b) : null;
 
     return {
       data: points,
       areaData: areaPoints,
-      integralValue: parseFloat(integral.toFixed(4)),
+      integralValue: integral === null ? null : parseFloat(integral.toFixed(4)),
     };
   }, [fn, bounds, domain]);
 
@@ -175,7 +176,7 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
 
       <div style={{ textAlign: 'center', marginTop: '0.25rem' }}>
         <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--slide-accent)' }}>
-          {'\u222B'}<sub>{bounds[0]}</sub><sup>{bounds[1]}</sup> {funcStr} dx = {integralValue}
+          {'\u222B'}<sub>{bounds[0]}</sub><sup>{bounds[1]}</sup> {funcStr} dx = {integralValue ?? 'invalid expression'}
         </div>
       </div>
     </div>
