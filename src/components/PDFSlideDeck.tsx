@@ -6,6 +6,7 @@ import MathVisualRenderer from './MathVisualRenderer';
 import SlideErrorBoundary from './SlideErrorBoundary';
 import { parseSlideContent } from '../utils/parseSlideContent';
 import { getTheme, ThemeName } from '../utils/themes';
+import { EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from '../utils/renderSlidesForExport';
 
 interface PDFSlideDeckProps {
   markdownContent: string;
@@ -38,8 +39,8 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
             className="slide-container p-8"
             style={{
               ...themeStyles,
-              width: '1024px',
-              height: '768px',
+              width: `${EXPORT_SLIDE_WIDTH}px`,
+              height: `${EXPORT_SLIDE_HEIGHT}px`,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
