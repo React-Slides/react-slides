@@ -52,6 +52,7 @@
     "preview": "vite preview",
     "cloudflare-build": "npm install @rollup/rollup-linux-x64-gnu && tsc && vite build",
     "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test:run",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage"

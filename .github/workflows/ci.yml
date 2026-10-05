@@ -1,28 +1,42 @@
 name: CI
 
+# Runs on pull requests only. A merge to main doesn't re-run these checks: the
+# PR head was already verified, and deploy-pages.yml rebuilds the demo on main.
+#
+# `pull_request` (never `pull_request_target`) keeps fork PRs safe: they get a
+# read-only token and no secrets.
 on:
   pull_request:
-  push:
-    branches:
-      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.github/instructions/**'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 # A new push to a PR supersedes the previous run
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   test:
+    # Draft PRs don't use Actions minutes; marking one ready for review runs CI
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
 
@@ -33,14 +47,14 @@ jobs:
       # Not setup-node's `cache: npm`: it runs npm in the repo before the upgrade above,
       # which devEngines rejects
       - name: Cache npm downloads
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Typecheck
         run: npm run typecheck

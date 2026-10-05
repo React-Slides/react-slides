@@ -62,8 +62,17 @@ We love your input! We want to make contributing to this project as easy and tra
 1.  **Fork the Project**: Create your own fork of the repository.
 2.  **Create your Feature Branch**: `git checkout -b feature/AmazingFeature`
 3.  **Commit your Changes**: `git commit -m 'Add some AmazingFeature'`
-4.  **Push to the Branch**: `git push origin feature/AmazingFeature`
-5.  **Open a Pull Request**: Go to the original repository and open a Pull Request.
+4.  **Run the checks locally**: `npm run check` (typecheck + tests). Please do this before pushing so CI runs only once per change.
+5.  **Push to the Branch**: `git push origin feature/AmazingFeature`
+6.  **Open a Pull Request**: Go to the original repository and open a Pull Request.
+
+### Continuous Integration
+
+CI (`.github/workflows/ci.yml`) runs typecheck, tests, and the library and demo builds on every pull request. It is not re-run when a PR merges to `main`; the merge only triggers the GitHub Pages deploy.
+
+- Open a **draft** PR while you're still iterating. CI skips drafts and runs once you mark the PR ready for review.
+- Docs-only changes (root `*.md`, `docs/`) don't trigger CI.
+- Workflows from first-time contributors' forks wait for a maintainer to approve them. Fork PRs get a read-only token and no secrets.
 
 ### Reporting Bugs
 
