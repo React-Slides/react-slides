@@ -126,6 +126,7 @@ console.log('Hello, World!');
 Slides are laid out on a fixed 16:9 canvas (1440×810) and scaled to fit the window, so a deck that fits on your laptop fits the same way on a projector or external display. A slide with more content than the canvas holds shrinks to fit rather than getting cut off.
 
 - Add `<!-- layout: title -->` to a slide to center it and show its `##` subtitle large, set apart from the title
+- Open `?deck=<file>.md` (e.g. `http://localhost:5173/?deck=My-Talk.md`) to present a markdown file from the project instead of the saved draft. With `npm run dev`, saving the file updates the slides right away and keeps your place
 - **← / →** move between slides
 - **F** toggles fullscreen
 - The Edit and Export buttons stay hidden while you present; move the mouse to the bottom-left corner (or tap there) to show them

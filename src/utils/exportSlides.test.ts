@@ -15,7 +15,13 @@ vi.mock('html2canvas', () => ({ default: (...args: unknown[]) => html2canvas(...
 const pdfInstances: Array<Record<string, ReturnType<typeof vi.fn>> & { options: unknown }> = [];
 vi.mock('jspdf', () => ({
   default: class {
-    internal = { pageSize: { getWidth: () => 768, getHeight: () => 576 } };
+    // Page size follows the requested format, like the real jsPDF
+    internal = {
+      pageSize: {
+        getWidth: () => (this.options as { format: number[] }).format[0],
+        getHeight: () => (this.options as { format: number[] }).format[1],
+      },
+    };
     addPage = vi.fn();
     addImage = vi.fn();
     save = vi.fn();
@@ -59,14 +65,14 @@ afterEach(() => {
 });
 
 describe('exportSlidesToPDF', () => {
-  it('uses a page size matching the 4:3 slide so images are not cropped', async () => {
+  it('uses a 16:9 page matching the slide so images are not cropped', async () => {
     mockSlides(2);
     await exportSlidesToPDF('# a\n---\n# b', 'dark');
 
     const pdf = pdfInstances[0];
-    expect(pdf.options).toEqual({ orientation: 'landscape', unit: 'pt', format: [768, 576] });
+    expect(pdf.options).toEqual({ orientation: 'landscape', unit: 'pt', format: [1080, 607.5] });
     expect(pdf.addImage).toHaveBeenCalledTimes(2);
-    expect(pdf.addImage).toHaveBeenCalledWith(expect.any(String), 'JPEG', 0, 0, 768, 576);
+    expect(pdf.addImage).toHaveBeenCalledWith(expect.any(String), 'JPEG', 0, 0, 1080, 607.5);
     expect(pdf.addPage).toHaveBeenCalledTimes(1);
     expect(pdf.save).toHaveBeenCalledWith(expect.stringMatching(/^slides_\d{4}-\d{2}-\d{2}\.pdf$/));
   });
@@ -94,12 +100,12 @@ describe('exportSlidesToPDF', () => {
 });
 
 describe('exportSlidesToPPTX', () => {
-  it('defines a layout matching the 4:3 slide so images are not stretched', async () => {
+  it('defines a 16:9 layout matching the slide so images are not stretched', async () => {
     mockSlides(3);
     await exportSlidesToPPTX('# a', 'light');
 
     const pptx = pptxInstances[0] as { defineLayout: ReturnType<typeof vi.fn>; layout: string; addSlide: ReturnType<typeof vi.fn> };
-    expect(pptx.defineLayout).toHaveBeenCalledWith({ name: 'REACT_SLIDES', width: 10, height: 7.5 });
+    expect(pptx.defineLayout).toHaveBeenCalledWith({ name: 'REACT_SLIDES', width: 10, height: 5.625 });
     expect(pptx.layout).toBe('REACT_SLIDES');
     expect(pptx.addSlide).toHaveBeenCalledTimes(3);
   });
