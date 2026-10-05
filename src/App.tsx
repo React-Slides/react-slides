@@ -7,6 +7,7 @@ import { exportSlidesToPPTX } from './utils/exportSlidesToPPTX';
 import { parseFrontmatter } from './utils/parseFrontmatter';
 import { ThemeName } from './utils/themes';
 import { useToast } from './contexts/ToastContext';
+import { DECK_FILE_CHANGED_EVENT, DeckFileChangedPayload, getDeckFileParam } from './utils/deckFile';
 
 const STORAGE_KEY = 'react-slides-draft';
 
@@ -16,6 +17,8 @@ const App: React.FC = () => {
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [isExportingPPTX, setIsExportingPPTX] = useState<boolean>(false);
   const { addToast } = useToast();
+  // `?deck=My-Talk.md` presents that file instead of the saved draft, and reloads it on save
+  const [deckFile] = useState(() => getDeckFileParam(window.location.search));
 
   // Parse frontmatter to extract theme and content
   const { theme, content } = useMemo(() => {
@@ -25,9 +28,27 @@ const App: React.FC = () => {
     return parseFrontmatter(markdownContent);
   }, [markdownContent]);
 
-  // Load content: check localStorage first, then fall back to content.md
+  const loadDeckFile = useCallback(async (file: string): Promise<void> => {
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}${file}`, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      setMarkdownContent(await response.text());
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      addToast('error', `Failed to load ${file}: ${message}`);
+    }
+  }, [addToast]);
+
+  // Load content: a ?deck= file if given, else the saved draft, else content.md
   useEffect(() => {
     const loadContent = async (): Promise<void> => {
+      if (deckFile) {
+        await loadDeckFile(deckFile);
+        return;
+      }
+
       // Check localStorage for saved draft
       const savedDraft = localStorage.getItem(STORAGE_KEY);
       if (savedDraft) {
@@ -50,14 +71,28 @@ const App: React.FC = () => {
     };
 
     loadContent();
-  }, [addToast]);
+  }, [addToast, deckFile, loadDeckFile]);
 
-  // Save to localStorage whenever content changes
+  // In dev, reload the ?deck= file whenever it's saved (see deckFileReload in vite.config.ts).
+  // The slide position is kept because SlideDeck only receives new content.
   useEffect(() => {
-    if (markdownContent !== undefined) {
+    const hot = import.meta.hot;
+    if (!deckFile || !hot) return;
+
+    const handleChange = (payload: DeckFileChangedPayload) => {
+      if (payload.file === deckFile) void loadDeckFile(deckFile);
+    };
+    hot.on(DECK_FILE_CHANGED_EVENT, handleChange);
+    return () => hot.off(DECK_FILE_CHANGED_EVENT, handleChange);
+  }, [deckFile, loadDeckFile]);
+
+  // Save to localStorage whenever content changes. A ?deck= file is the source of truth,
+  // so it doesn't overwrite the saved draft.
+  useEffect(() => {
+    if (markdownContent !== undefined && !deckFile) {
       localStorage.setItem(STORAGE_KEY, markdownContent);
     }
-  }, [markdownContent]);
+  }, [markdownContent, deckFile]);
 
   // Clear saved draft and reload default content
   const handleResetToDefault = useCallback(async () => {
