@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import SlideDeck from './components/SlideDeck';
 import MarkdownForm from './components/MarkdownForm';
+import AutoHideControls from './components/AutoHideControls';
 import { exportSlidesToPDF } from './utils/exportSlidesToPDF';
 import { exportSlidesToPPTX } from './utils/exportSlidesToPPTX';
 import { parseFrontmatter } from './utils/parseFrontmatter';
@@ -139,31 +140,31 @@ const App: React.FC = () => {
             <SlideDeck markdownContent={content} theme={theme} />
           </div>
 
-          {/* Action buttons */}
-          <button
-            onClick={() => setIsEditing(true)}
-            className="fixed bottom-4 left-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 z-20"
-          >
-            Edit Slides
-          </button>
+          {/* Action buttons: hidden while presenting, shown when the pointer nears the bottom-left */}
+          <AutoHideControls forceVisible={isExporting || isExportingPPTX}>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Edit Slides
+            </button>
 
-          {/* ✅ Export PDF button - positioned next to Edit Slides button */}
-          <button
-            onClick={handleExportPDF}
-            disabled={isExporting || !content}
-            className="fixed bottom-4 left-32 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed z-20"
-          >
-            {isExporting ? 'Exporting...' : 'Export PDF'}
-          </button>
+            <button
+              onClick={handleExportPDF}
+              disabled={isExporting || !content}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isExporting ? 'Exporting...' : 'Export PDF'}
+            </button>
 
-          {/* Export PPTX button */}
-          <button
-            onClick={handleExportPPTX}
-            disabled={isExportingPPTX || !content}
-            className="fixed bottom-4 left-64 px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed z-20"
-          >
-            {isExportingPPTX ? 'Exporting...' : 'Export PPTX'}
-          </button>
+            <button
+              onClick={handleExportPPTX}
+              disabled={isExportingPPTX || !content}
+              className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isExportingPPTX ? 'Exporting...' : 'Export PPTX'}
+            </button>
+          </AutoHideControls>
         </div>
       )}
     </div>

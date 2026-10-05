@@ -121,18 +121,40 @@ console.log('Hello, World!');
 
 ---
 
+## Presenting
+
+Slides are laid out on a fixed 16:9 canvas (1440×810) and scaled to fit the window, so a deck that fits on your laptop fits the same way on a projector or external display. A slide with more content than the canvas holds shrinks to fit rather than getting cut off.
+
+- Add `<!-- layout: title -->` to a slide to center it and show its `##` subtitle large, set apart from the title
+- **← / →** move between slides
+- **F** toggles fullscreen
+- The Edit and Export buttons stay hidden while you present; move the mouse to the bottom-left corner (or tap there) to show them
+
+---
+
 ## Using Icons
 
-This project uses [Lucide React](https://lucide.dev/) for beautiful, customizable icons. You can use any icon from the Lucide library in your components:
+Slides can use any [Lucide](https://lucide.dev/icons/) icon inline with a shortcode: `:lucide-` + the icon's name from lucide.dev + `:`.
+
+```markdown
+## :lucide-zap: Quick Wins
+
+- :lucide-timer: Run 10-minute sprints
+- :lucide-target: Commit to one action
+```
+
+Add `@<n>x` to scale an icon relative to the text, e.g. `:lucide-brain@4x:` on its own line for a large feature icon (whole numbers 1–9).
+
+Icons work in headings, lists, and text, size to the surrounding text, and use the theme's accent color. They also appear in PDF and PPTX exports. An unknown name is left as plain text, and shortcodes inside `code` stay literal.
+
+Lucide React is also available for your own components:
 
 ```jsx
-import { Heart, Share, Twitter } from 'lucide-react';
+import { Heart, Share } from 'lucide-react';
 
-// Use in your component
 <Heart className="w-6 h-6" />
 <Share size={24} />
-<Twitter color="blue" />
-````
+```
 
 ---
 

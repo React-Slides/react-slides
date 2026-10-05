@@ -48,7 +48,7 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme }) =
               color: 'var(--slide-text)',
             } as React.CSSProperties}
           >
-            <div className="max-w-4xl mx-auto w-full">
+            <div className={`max-w-4xl mx-auto w-full${parsedSlide.layout ? ` slide-layout-${parsedSlide.layout}` : ''}`}>
               <SlideErrorBoundary>
                 {/* Render markdown content */}
                 {markdownBlock && (

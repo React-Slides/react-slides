@@ -238,4 +238,63 @@ describe('MarkdownSlide', () => {
       expect(container).toBeTruthy();
     });
   });
+
+  describe('lucide icon shortcodes', () => {
+    it('renders a shortcode as an inline icon', () => {
+      const { container } = render(
+        <MarkdownSlide content="## :lucide-zap: Looping" index={0} isActive={true} />
+      );
+
+      const icon = container.querySelector('svg[data-lucide-icon="zap"]');
+      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
+      expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Looping');
+      expect(screen.getByRole('heading', { level: 2 })).not.toHaveTextContent(':lucide-zap:');
+    });
+
+    it('renders several icons in lists and inside emphasis', () => {
+      const { container } = render(
+        <MarkdownSlide
+          content={'- :lucide-timer: Timers\n- **:lucide-target: Focus** and :lucide-alarm-clock:'}
+          index={0}
+          isActive={true}
+        />
+      );
+
+      expect(container.querySelector('li svg[data-lucide-icon="timer"]')).toBeInTheDocument();
+      expect(container.querySelector('strong svg[data-lucide-icon="target"]')).toBeInTheDocument();
+      expect(container.querySelector('svg[data-lucide-icon="alarm-clock"]')).toBeInTheDocument();
+    });
+
+    it('scales an icon with an @Nx suffix', () => {
+      const { container } = render(
+        <MarkdownSlide content={':lucide-brain@4x:\n\nInline :lucide-zap: and :lucide-zap@2x:'} index={0} isActive={true} />
+      );
+
+      const brain = container.querySelector('svg[data-lucide-icon="brain"]');
+      expect(brain).toHaveStyle({ width: '4em', height: '4em' });
+      const zaps = container.querySelectorAll('svg[data-lucide-icon="zap"]');
+      expect(zaps[0]).toHaveStyle({ width: '1em' });
+      expect(zaps[1]).toHaveStyle({ width: '2em' });
+      expect(container).not.toHaveTextContent('@');
+    });
+
+    it('leaves unknown icon names as plain text', () => {
+      const { container } = render(
+        <MarkdownSlide content="Hello :lucide-not-a-real-icon: world" index={0} isActive={true} />
+      );
+
+      expect(container.querySelector('svg')).not.toBeInTheDocument();
+      expect(screen.getByText('Hello :lucide-not-a-real-icon: world')).toBeInTheDocument();
+    });
+
+    it('keeps shortcodes literal inside code', () => {
+      const { container } = render(
+        <MarkdownSlide content="Use `:lucide-zap:` for a lightning bolt" index={0} isActive={true} />
+      );
+
+      expect(container.querySelector('svg')).not.toBeInTheDocument();
+      expect(screen.getByText(':lucide-zap:').tagName).toBe('CODE');
+    });
+  });
 });

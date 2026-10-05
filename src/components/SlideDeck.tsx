@@ -1,5 +1,5 @@
 // SlideDeck.tsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
@@ -17,9 +17,38 @@ const isEditableTarget = (target: EventTarget | null): boolean => {
   return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
 };
 
+// Slides are laid out on a fixed 16:9 canvas and scaled to fit the window, so a slide that
+// fits on a laptop also fits on a projector or external display
+export const SLIDE_CANVAS_WIDTH = 1440;
+export const SLIDE_CANVAS_HEIGHT = 810;
+const SLIDE_CANVAS_PADDING = 48;
+// Content taller than the canvas shrinks to fit, but never below this
+const MIN_CONTENT_SCALE = 0.6;
+
+// No-op where ResizeObserver is unavailable (e.g. jsdom)
+const observeResize = (element: Element, onResize: () => void): (() => void) => {
+  if (typeof ResizeObserver === 'undefined') return () => {};
+  const observer = new ResizeObserver(onResize);
+  observer.observe(element);
+  return () => observer.disconnect();
+};
+
+const toggleFullscreen = () => {
+  if (document.fullscreenElement) {
+    void document.exitFullscreen?.();
+  } else {
+    void document.documentElement.requestFullscreen?.();
+  }
+};
+
 const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slides, setSlides] = useState<ParsedSlide[]>([]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [canvasScale, setCanvasScale] = useState(1);
+  const [contentScale, setContentScale] = useState(1);
+  const hasSlides = slides.length > 0;
   const { theme: frontmatterTheme, content } = useMemo(() => parseFrontmatter(markdownContent ?? ''), [markdownContent]);
 
   // Get theme styles as CSS variables; an explicit prop overrides the frontmatter theme
@@ -34,13 +63,15 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
     }
   }, [markdownContent, content]);
 
+  // Clamp inside the updater: several key presses can land before a re-render, and checking
+  // the rendered index would let them all through and run past the last slide
   const nextSlide = useCallback(() => {
-    if (currentSlide < slides.length - 1) setCurrentSlide(prev => prev + 1);
-  }, [currentSlide, slides.length]);
+    setCurrentSlide(prev => Math.min(prev + 1, Math.max(slides.length - 1, 0)));
+  }, [slides.length]);
 
   const prevSlide = useCallback(() => {
-    if (currentSlide > 0) setCurrentSlide(prev => prev - 1);
-  }, [currentSlide]);
+    setCurrentSlide(prev => Math.max(prev - 1, 0));
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {
@@ -48,11 +79,39 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isEditableTarget(e.target)) return;
       if (e.key === 'ArrowRight') nextSlide();
       if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'f' || e.key === 'F') toggleFullscreen();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextSlide, prevSlide]);
+
+  // Scale the canvas to the largest size that fits the window
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const update = () => {
+      const { width, height } = stage.getBoundingClientRect();
+      if (width > 0 && height > 0) {
+        setCanvasScale(Math.min(width / SLIDE_CANVAS_WIDTH, height / SLIDE_CANVAS_HEIGHT));
+      }
+    };
+    update();
+    return observeResize(stage, update);
+  }, [hasSlides]);
+
+  // Shrink a slide whose content is taller than the canvas (offsetHeight ignores transforms)
+  useLayoutEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+    const update = () => {
+      const available = SLIDE_CANVAS_HEIGHT - 2 * SLIDE_CANVAS_PADDING;
+      const height = content.offsetHeight;
+      setContentScale(height > available ? Math.max(MIN_CONTENT_SCALE, available / height) : 1);
+    };
+    update();
+    return observeResize(content, update);
+  }, [hasSlides, currentSlide]);
 
   if (slides.length === 0) {
     return (
@@ -86,10 +145,24 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
         color: 'var(--slide-text)',
       } as React.CSSProperties}
     >
-      <div className="flex-1 relative">
-        {/* Single container for all slide content */}
-        <div className="absolute inset-0 p-6 flex flex-col justify-center">
-          <div className="max-w-4xl mx-auto w-full">
+      <div ref={stageRef} className="flex-1 relative overflow-hidden">
+        {/* Fixed-size 16:9 canvas, centered and scaled to fit the window */}
+        <div
+          data-testid="slide-canvas"
+          className="absolute left-1/2 top-1/2 flex flex-col justify-center"
+          style={{
+            width: SLIDE_CANVAS_WIDTH,
+            height: SLIDE_CANVAS_HEIGHT,
+            padding: SLIDE_CANVAS_PADDING,
+            transform: `translate(-50%, -50%) scale(${canvasScale})`,
+          }}
+        >
+          <div
+            ref={contentRef}
+            data-layout={currentParsedSlide.layout}
+            className={`max-w-6xl mx-auto w-full${currentParsedSlide.layout ? ` slide-layout-${currentParsedSlide.layout}` : ''}`}
+            style={contentScale < 1 ? { transform: `scale(${contentScale})` } : undefined}
+          >
             <SlideErrorBoundary resetKey={currentParsedSlide}>
               {/* Render markdown content if present */}
               {markdownBlock && (

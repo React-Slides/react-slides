@@ -1,5 +1,5 @@
 // src/components/SlideDeck.test.tsx
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import SlideDeck from './SlideDeck';
 
 // Mock console.log to suppress slide debug output
@@ -251,6 +251,33 @@ describe('SlideDeck', () => {
     });
   });
 
+  describe('rapid navigation', () => {
+    it('stops at the last slide when several key presses arrive before a re-render', () => {
+      render(<SlideDeck markdownContent={'# Slide 1\n\n---\n\n# Slide 2\n\n---\n\n# Slide 3'} />);
+
+      act(() => {
+        for (let i = 0; i < 10; i++) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+        }
+      });
+
+      expect(screen.getByText('Slide 3')).toBeInTheDocument();
+    });
+
+    it('stops at the first slide on rapid ArrowLeft presses', () => {
+      render(<SlideDeck markdownContent={'# Slide 1\n\n---\n\n# Slide 2'} />);
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+
+      act(() => {
+        for (let i = 0; i < 10; i++) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+        }
+      });
+
+      expect(screen.getByText('Slide 1')).toBeInTheDocument();
+    });
+  });
+
   describe('themes', () => {
     it('applies default light theme', () => {
       const { container } = render(
@@ -488,6 +515,38 @@ type: fade-in
       const { container } = render(<SlideDeck markdownContent={'# One\n```yaml\na: 1\n---\nb: 2\n```'} />);
 
       expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('100%');
+    });
+  });
+
+  describe('fixed 16:9 canvas', () => {
+    it('lays slides out on a fixed-size canvas so they look the same on any screen', () => {
+      render(<SlideDeck markdownContent="# Slide 1" />);
+
+      const canvas = screen.getByTestId('slide-canvas');
+      expect(canvas).toHaveStyle({ width: '1440px', height: '810px' });
+      expect(canvas.style.transform).toMatch(/scale\(/);
+      expect(canvas).toHaveTextContent('Slide 1');
+    });
+
+    it('toggles fullscreen with the F key', () => {
+      const requestFullscreen = vi.fn().mockResolvedValue(undefined);
+      document.documentElement.requestFullscreen = requestFullscreen;
+
+      render(<SlideDeck markdownContent="# Slide 1" />);
+      fireEvent.keyDown(window, { key: 'f' });
+
+      expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('slide layouts', () => {
+    it('applies the title layout to a slide marked with <!-- layout: title -->', () => {
+      render(<SlideDeck markdownContent={'<!-- layout: title -->\n# Deck\n## Do It Now'} />);
+
+      const content = screen.getByTestId('slide-canvas').firstElementChild;
+      expect(content).toHaveClass('slide-layout-title');
+      expect(content).toHaveAttribute('data-layout', 'title');
+      expect(screen.queryByText(/layout:/)).not.toBeInTheDocument();
     });
   });
 });
