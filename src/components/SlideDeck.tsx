@@ -10,20 +10,21 @@ import { SlideDeckProps } from '../types';
 import { parseSlides, ParsedSlide } from '../utils/parseSlideContent';
 import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme } from '../utils/themes';
+import {
+  SLIDE_CANVAS_WIDTH,
+  SLIDE_CANVAS_HEIGHT,
+  SLIDE_CANVAS_PADDING,
+  SLIDE_CONTENT_CLASS,
+  fitContentScale,
+} from '../utils/slideCanvas';
+
+export { SLIDE_CANVAS_WIDTH, SLIDE_CANVAS_HEIGHT };
 
 // Arrow keys typed into form fields (e.g. a visualization's f(x) input) shouldn't change slides
 const isEditableTarget = (target: EventTarget | null): boolean => {
   if (!(target instanceof HTMLElement)) return false;
   return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
 };
-
-// Slides are laid out on a fixed 16:9 canvas and scaled to fit the window, so a slide that
-// fits on a laptop also fits on a projector or external display
-export const SLIDE_CANVAS_WIDTH = 1440;
-export const SLIDE_CANVAS_HEIGHT = 810;
-const SLIDE_CANVAS_PADDING = 48;
-// Content taller than the canvas shrinks to fit, but never below this
-const MIN_CONTENT_SCALE = 0.6;
 
 // No-op where ResizeObserver is unavailable (e.g. jsdom)
 const observeResize = (element: Element, onResize: () => void): (() => void) => {
@@ -104,11 +105,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
   useLayoutEffect(() => {
     const content = contentRef.current;
     if (!content) return;
-    const update = () => {
-      const available = SLIDE_CANVAS_HEIGHT - 2 * SLIDE_CANVAS_PADDING;
-      const height = content.offsetHeight;
-      setContentScale(height > available ? Math.max(MIN_CONTENT_SCALE, available / height) : 1);
-    };
+    const update = () => setContentScale(fitContentScale(content.offsetHeight));
     update();
     return observeResize(content, update);
   }, [hasSlides, currentSlide]);
@@ -160,7 +157,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
           <div
             ref={contentRef}
             data-layout={currentParsedSlide.layout}
-            className={`max-w-6xl mx-auto w-full${currentParsedSlide.layout ? ` slide-layout-${currentParsedSlide.layout}` : ''}`}
+            className={`${SLIDE_CONTENT_CLASS}${currentParsedSlide.layout ? ` slide-layout-${currentParsedSlide.layout}` : ''}`}
             style={contentScale < 1 ? { transform: `scale(${contentScale})` } : undefined}
           >
             <SlideErrorBoundary resetKey={currentParsedSlide}>

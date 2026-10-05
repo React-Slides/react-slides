@@ -54,7 +54,7 @@ export const exportSlidesToPDF = async (
       // Capture slide as canvas image with theme background
       const canvas = await html2canvas(slides[i], {
         backgroundColor: bgColor,
-        scale: 3, // Higher quality
+        scale: 2, // 2880x1620 per 16:9 slide: sharp, without oversized files
         useCORS: true, // Handle cross-origin images
         allowTaint: false
       });

@@ -30,6 +30,25 @@ describe('renderSlidesForExport', () => {
     expect(document.body.contains(slides[0])).toBe(false);
   });
 
+  it('applies the html2canvas text-baseline fix only while an export is active', async () => {
+    const fixStyle = () => document.querySelector('style[data-react-slides-export]');
+    expect(fixStyle()).toBeNull();
+
+    const { cleanup } = await renderSlidesForExport('# One', 'light', FAST);
+    expect(fixStyle()?.textContent).toContain('body > div > img');
+
+    cleanup();
+    expect(fixStyle()).toBeNull();
+  });
+
+  it('renders slides on the 16:9 canvas used on screen', async () => {
+    const { slides, cleanup } = await renderSlidesForExport('# One', 'light', FAST);
+
+    expect(slides[0]).toHaveStyle({ width: '1440px', height: '810px' });
+    expect(slides[0].querySelector('.slide-content')).toHaveClass('max-w-6xl');
+    cleanup();
+  });
+
   it('returns an empty deck without waiting for the timeout', async () => {
     vi.resetModules();
     vi.doMock('../components/PDFSlideDeck', async () => {

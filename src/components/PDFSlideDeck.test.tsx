@@ -40,15 +40,15 @@ describe('PDFSlideDeck', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders slide containers with fixed dimensions', () => {
+    it('renders slide containers on the same 16:9 canvas as the on-screen deck', () => {
       const { container } = render(
         <PDFSlideDeck markdownContent="# Test" />
       );
 
       const slideContainer = container.querySelector('.slide-container');
       expect(slideContainer).toHaveStyle({
-        width: '1024px',
-        height: '768px',
+        width: '1440px',
+        height: '810px',
       });
     });
   });

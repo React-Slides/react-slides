@@ -8,6 +8,7 @@ import { parseSlides } from '../utils/parseSlideContent';
 import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme, ThemeName } from '../utils/themes';
 import { EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from '../utils/renderSlidesForExport';
+import { SLIDE_CANVAS_PADDING, SLIDE_CONTENT_CLASS } from '../utils/slideCanvas';
 
 interface PDFSlideDeckProps {
   markdownContent: string;
@@ -35,9 +36,10 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme }) =
         return (
           <div
             key={index}
-            className="slide-container p-8"
+            className="slide-container"
             style={{
               ...themeStyles,
+              padding: SLIDE_CANVAS_PADDING,
               width: `${EXPORT_SLIDE_WIDTH}px`,
               height: `${EXPORT_SLIDE_HEIGHT}px`,
               display: 'flex',
@@ -48,11 +50,11 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme }) =
               color: 'var(--slide-text)',
             } as React.CSSProperties}
           >
-            <div className={`max-w-4xl mx-auto w-full${parsedSlide.layout ? ` slide-layout-${parsedSlide.layout}` : ''}`}>
+            <div className={`slide-content ${SLIDE_CONTENT_CLASS}${parsedSlide.layout ? ` slide-layout-${parsedSlide.layout}` : ''}`}>
               <SlideErrorBoundary>
                 {/* Render markdown content */}
                 {markdownBlock && (
-                  <div className="mb-8">
+                  <div className="mb-0">
                     <MarkdownSlide
                       index={index}
                       content={markdownBlock.content}
