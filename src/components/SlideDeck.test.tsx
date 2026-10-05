@@ -490,4 +490,25 @@ type: fade-in
       expect((container.querySelector('.bg-gray-200 > div') as HTMLElement).style.width).toBe('100%');
     });
   });
+
+  describe('fixed 16:9 canvas', () => {
+    it('lays slides out on a fixed-size canvas so they look the same on any screen', () => {
+      render(<SlideDeck markdownContent="# Slide 1" />);
+
+      const canvas = screen.getByTestId('slide-canvas');
+      expect(canvas).toHaveStyle({ width: '1440px', height: '810px' });
+      expect(canvas.style.transform).toMatch(/scale\(/);
+      expect(canvas).toHaveTextContent('Slide 1');
+    });
+
+    it('toggles fullscreen with the F key', () => {
+      const requestFullscreen = vi.fn().mockResolvedValue(undefined);
+      document.documentElement.requestFullscreen = requestFullscreen;
+
+      render(<SlideDeck markdownContent="# Slide 1" />);
+      fireEvent.keyDown(window, { key: 'f' });
+
+      expect(requestFullscreen).toHaveBeenCalledTimes(1);
+    });
+  });
 });

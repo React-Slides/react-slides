@@ -121,6 +121,15 @@ console.log('Hello, World!');
 
 ---
 
+## Presenting
+
+Slides are laid out on a fixed 16:9 canvas (1440×810) and scaled to fit the window, so a deck that fits on your laptop fits the same way on a projector or external display. A slide with more content than the canvas holds shrinks to fit rather than getting cut off.
+
+- **← / →** move between slides
+- **F** toggles fullscreen
+
+---
+
 ## Using Icons
 
 Slides can use any [Lucide](https://lucide.dev/icons/) icon inline with a shortcode: `:lucide-` + the icon's name from lucide.dev + `:`.
