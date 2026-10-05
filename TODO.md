@@ -51,6 +51,7 @@ Re-enable Actions safely for an open source repo, without running tests twice pe
 - [x] Cancel superseded runs on the same PR
 - [x] Use `pull_request` (never `pull_request_target`), `contents: read`, `persist-credentials: false`
 - [x] Pin third-party actions to commit SHAs
+- [x] Upgrade actions off Node 20 (checkout v7, setup-node v7, cache v6, Pages actions v5/v6); disable setup-node's auto-caching, which would run npm 10 before the upgrade
 - [x] Install with `npm ci --ignore-scripts` so dependency install scripts can't run in CI
 - [x] Add job timeouts
 - [x] Add `npm run check` (typecheck + tests) for running locally before pushing; document in CONTRIBUTING
