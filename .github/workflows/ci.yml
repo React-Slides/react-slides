@@ -1,28 +1,29 @@
-name: Deploy Demo to GitHub Pages
+name: CI
 
-# Builds and deploys only; tests already ran on the PR in ci.yml.
+# Runs on pull requests only. A merge to main doesn't re-run these checks: the
+# PR head was already verified, and deploy-pages.yml rebuilds the demo on main.
+#
+# `pull_request` (never `pull_request_target`) keeps fork PRs safe: they get a
+# read-only token and no secrets.
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-      - 'LICENSE'
-      - '.github/instructions/**'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    # No paths-ignore: `test` is a required check on main, and a workflow skipped by
+    # a path filter never reports, which would block docs-only PRs
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# A new push to a PR supersedes the previous run
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  test:
+    # Draft PRs don't use Actions minutes; marking one ready for review runs CI
+    if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -54,25 +55,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test:run
+
+      - name: Build library
+        run: npm run build:lib
+
       - name: Build demo
         run: npm run build:demo
-
-      - name: Setup Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: './dist-demo'
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

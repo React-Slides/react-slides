@@ -40,3 +40,22 @@
 - [ ] Add `TRAFFIC_TOKEN` repo secret (PAT with `repo` scope) to enable `.github/workflows/traffic-archive.yml`
 - [ ] Serve stats report at `react-slides.github.io/react-slides/stats/` — modify `deploy-pages.yml` to checkout `github-repo-stats` branch and copy `{owner}/{repo}/latest-report/` into `dist-demo/stats/` before uploading the Pages artifact
 - [ ] Un-ignore `CLAUDE.md` from `.gitignore` so the Pages/stats documentation is tracked in git
+
+## CI / GitHub Actions
+
+Re-enable Actions safely for an open source repo, without running tests twice per change.
+
+- [x] CI runs on pull requests only, not again on push to `main` (the PR head was already verified)
+- [x] Skip CI on draft PRs; run when marked ready for review
+- [x] Skip the Pages deploy for docs-only pushes (CI still runs: a required check skipped by a path filter would block the PR)
+- [x] Cancel superseded runs on the same PR
+- [x] Use `pull_request` (never `pull_request_target`), `contents: read`, `persist-credentials: false`
+- [x] Pin third-party actions to commit SHAs
+- [x] Upgrade actions off Node 20 (checkout v7, setup-node v7, cache v6, Pages actions v5/v6); disable setup-node's auto-caching, which would run npm 10 before the upgrade
+- [x] Install with `npm ci --ignore-scripts` so dependency install scripts can't run in CI
+- [x] Add job timeouts
+- [x] Add `npm run check` (typecheck + tests) for running locally before pushing; document in CONTRIBUTING
+- [x] Same hardening and upgrade for `publish.yml` (done in #91 to avoid conflicts)
+- [x] Repo setting: require approval for workflows from **all** outside contributors
+- [x] Branch protection on `main`: require the `test` check from GitHub Actions
+- [ ] Re-enable `traffic-archive.yml` once `TRAFFIC_TOKEN` is set (disabled by GitHub for inactivity; failing without the token)
