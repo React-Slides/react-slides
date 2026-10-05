@@ -13,7 +13,9 @@ We love your input! We want to make contributing to this project as easy and tra
 
 ### Prerequisites
 
-- Node.js 22 (recommended), or 20.17+
+- **Node.js 24**, pinned in [`.nvmrc`](./.nvmrc). Node 24 includes npm 11.
+    - **nvm:** run `nvm install` once, then `nvm use` in the project folder
+    - **mise:** enable `.nvmrc` support once with `mise settings add idiomatic_version_file_enable_tools node` (mise ignores `.nvmrc` by default)
 - **npm 11 or newer (required)**. Check with `npm -v`, and upgrade with:
 
     ```bash

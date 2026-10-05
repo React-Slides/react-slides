@@ -28,7 +28,7 @@ jobs:
         with:
           # Auto-caching would run npm before the npm 11 upgrade below
           package-manager-cache: false
-          node-version: '22'
+          node-version-file: .nvmrc
           registry-url: 'https://npm.pkg.github.com'
           # GitHub Packages requires the npm scope to match the repository owner
           scope: '@react-slides'
