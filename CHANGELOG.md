@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 
-- **Renamed the package from `@str-ventures/react-slides` to `@react-slides/react-slides`.** GitHub Packages requires the npm scope to match the repository owner (`React-Slides`). Update your imports and change the `.npmrc` scope line to `@react-slides:registry=https://npm.pkg.github.com`.
+- **Renamed the package to `@react-slides/react-slides`** (1.x used a different npm scope). GitHub Packages requires the npm scope to match the repository owner (`React-Slides`). Update your imports and change the `.npmrc` scope line to `@react-slides:registry=https://npm.pkg.github.com`.
 - **`html2canvas`, `jspdf` and `pptxgenjs` are now required peer dependencies** (previously optional). npm 7+ installs them automatically; with yarn, pnpm or older npm, install them explicitly. They are still loaded on demand, so they only add to your bundle when an export runs.
 - **Raised minimum peer dependency versions** to pick up security fixes: `jspdf` `^4.2.1` (jsPDF 2.x is no longer supported), `js-yaml` `^4.3.2`, `html2canvas` `^1.4.1`.
 
