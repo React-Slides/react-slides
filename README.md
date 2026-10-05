@@ -123,16 +123,25 @@ console.log('Hello, World!');
 
 ## Using Icons
 
-This project uses [Lucide React](https://lucide.dev/) for beautiful, customizable icons. You can use any icon from the Lucide library in your components:
+Slides can use any [Lucide](https://lucide.dev/icons/) icon inline with a shortcode: `:lucide-` + the icon's name from lucide.dev + `:`.
+
+```markdown
+## :lucide-zap: Quick Wins
+
+- :lucide-timer: Run 10-minute sprints
+- :lucide-target: Commit to one action
+```
+
+Icons work in headings, lists, and text, size to the surrounding text, and use the theme's accent color. They also appear in PDF and PPTX exports. An unknown name is left as plain text, and shortcodes inside `code` stay literal.
+
+Lucide React is also available for your own components:
 
 ```jsx
-import { Heart, Share, Twitter } from 'lucide-react';
+import { Heart, Share } from 'lucide-react';
 
-// Use in your component
 <Heart className="w-6 h-6" />
 <Share size={24} />
-<Twitter color="blue" />
-````
+```
 
 ---
 
