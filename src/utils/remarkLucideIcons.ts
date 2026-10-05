@@ -2,9 +2,12 @@ import { icons } from 'lucide-react';
 
 /**
  * Inline icon shortcodes for slide markdown: `:lucide-zap:` renders the Lucide `zap` icon.
- * Names are the kebab-case names shown on lucide.dev. An unknown name stays as plain text.
+ * Names are the kebab-case names shown on lucide.dev. An optional `@<n>x` suffix scales the
+ * icon relative to the surrounding text, e.g. `:lucide-brain@4x:` (whole numbers 1–9; a decimal
+ * like `@1.5x` would make remark-gfm read `name@1.5x` as an email address and link it).
+ * An unknown name stays as plain text.
  */
-const LUCIDE_SHORTCODE = /:lucide-([a-z0-9]+(?:-[a-z0-9]+)*):/g;
+const LUCIDE_SHORTCODE = /:lucide-([a-z0-9]+(?:-[a-z0-9]+)*)(?:@([1-9])x)?:/g;
 
 /** `bar-chart-2` -> `BarChart2`, the key lucide-react uses in its `icons` map. */
 export function toLucideComponentName(name: string): string {
@@ -33,7 +36,7 @@ function splitText(value: string): MdastNode[] | null {
   let last = 0;
 
   for (const match of value.matchAll(LUCIDE_SHORTCODE)) {
-    const name = match[1];
+    const [, name, scale] = match;
     if (!getLucideIcon(name)) continue;
 
     const start = match.index ?? 0;
@@ -41,7 +44,10 @@ function splitText(value: string): MdastNode[] | null {
     // Rendered by MarkdownSlide's `span` component, which swaps in the icon
     nodes.push({
       type: 'lucideIcon',
-      data: { hName: 'span', hProperties: { dataLucideIcon: name } },
+      data: {
+        hName: 'span',
+        hProperties: scale ? { dataLucideIcon: name, dataLucideScale: scale } : { dataLucideIcon: name },
+      },
     });
     last = start + match[0].length;
   }

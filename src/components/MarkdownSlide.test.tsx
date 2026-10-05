@@ -266,6 +266,19 @@ describe('MarkdownSlide', () => {
       expect(container.querySelector('svg[data-lucide-icon="alarm-clock"]')).toBeInTheDocument();
     });
 
+    it('scales an icon with an @Nx suffix', () => {
+      const { container } = render(
+        <MarkdownSlide content={':lucide-brain@4x:\n\nInline :lucide-zap: and :lucide-zap@2x:'} index={0} isActive={true} />
+      );
+
+      const brain = container.querySelector('svg[data-lucide-icon="brain"]');
+      expect(brain).toHaveStyle({ width: '4em', height: '4em' });
+      const zaps = container.querySelectorAll('svg[data-lucide-icon="zap"]');
+      expect(zaps[0]).toHaveStyle({ width: '1em' });
+      expect(zaps[1]).toHaveStyle({ width: '2em' });
+      expect(container).not.toHaveTextContent('@');
+    });
+
     it('leaves unknown icon names as plain text', () => {
       const { container } = render(
         <MarkdownSlide content="Hello :lucide-not-a-real-icon: world" index={0} isActive={true} />

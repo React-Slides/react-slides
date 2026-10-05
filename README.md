@@ -132,6 +132,8 @@ Slides can use any [Lucide](https://lucide.dev/icons/) icon inline with a shortc
 - :lucide-target: Commit to one action
 ```
 
+Add `@<n>x` to scale an icon relative to the text, e.g. `:lucide-brain@4x:` on its own line for a large feature icon (whole numbers 1–9).
+
 Icons work in headings, lists, and text, size to the surrounding text, and use the theme's accent color. They also appear in PDF and PPTX exports. An unknown name is left as plain text, and shortcodes inside `code` stay literal.
 
 Lucide React is also available for your own components:

@@ -44,6 +44,12 @@ body {
   --tw-prose-code: var(--slide-text);
 }
 
+/* Strikethrough (~~text~~): red line, text keeps its normal color */
+.prose del {
+  text-decoration-color: #ef4444;
+  text-decoration-thickness: 0.08em;
+}
+
 /* Toast notification animation */
 @keyframes slide-in {
   from {

@@ -10,9 +10,12 @@ import remarkLucideIcons, { getLucideIcon } from '../utils/remarkLucideIcons';
 const markdownComponents = {
   // remarkLucideIcons marks each `:lucide-name:` shortcode as a span with data-lucide-icon
   span: ({ node: _node, ...props }: React.HTMLAttributes<HTMLSpanElement> & { node?: unknown }) => {
-    const name = (props as Record<string, unknown>)['data-lucide-icon'];
+    const attrs = props as Record<string, unknown>;
+    const name = attrs['data-lucide-icon'];
     const Icon = typeof name === 'string' ? getLucideIcon(name) : undefined;
     if (!Icon) return <span {...props} />;
+
+    const size = `${attrs['data-lucide-scale'] ?? 1}em`;
 
     return (
       <Icon
@@ -21,8 +24,8 @@ const markdownComponents = {
         className="lucide-inline-icon"
         style={{
           display: 'inline-block',
-          width: '1em',
-          height: '1em',
+          width: size,
+          height: size,
           verticalAlign: '-0.125em',
           color: 'var(--slide-accent)',
         }}
