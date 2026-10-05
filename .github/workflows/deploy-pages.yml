@@ -25,8 +25,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '22'
+
+      # package.json devEngines requires npm 11; npm 10 can't resolve this dependency tree
+      - name: Upgrade npm
+        run: npm install -g npm@11
+
+      # Not setup-node's `cache: npm`: it runs npm in the repo before the upgrade above,
+      # which devEngines rejects
+      - name: Cache npm downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-
 
       - name: Install dependencies
         run: npm ci

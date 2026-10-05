@@ -31,17 +31,13 @@ A modern, markdown-driven slide deck presentation tool built with React and Vite
 npm install @str-ventures/react-slides
 ```
 
-Most peer dependencies are likely already in your project. If not, install the required ones:
+npm 7+ installs the peer dependencies automatically, including the PDF/PPTX export libraries. With yarn, pnpm, or older npm, install them explicitly:
 
 ```bash
-npm install react react-dom recharts react-markdown remark-gfm remark-math rehype-katex katex lucide-react js-yaml
+npm install react react-dom recharts react-markdown remark-gfm remark-math rehype-katex katex lucide-react js-yaml html2canvas jspdf pptxgenjs
 ```
 
-**Optional:** For PDF/PPTX export features:
-
-```bash
-npm install html2canvas jspdf pptxgenjs
-```
+The export libraries are loaded on demand, so they only add to your bundle when an export runs.
 
 #### Setup
 
@@ -74,6 +70,9 @@ Your first slide
 ```
 
 ### Development Setup
+
+> [!IMPORTANT]
+> Developing this repo requires **npm 11+** (`npm install -g npm@11`). npm 10 can't resolve the dependency tree, and `package.json` blocks it with an `EBADDEVENGINES` error. See [CONTRIBUTING.md](CONTRIBUTING.md#prerequisites) for details. Installing the published library works with any npm version.
 
 ```bash
 git clone https://github.com/STR-Ventures/react-slides.git
