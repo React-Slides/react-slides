@@ -127,6 +127,7 @@ Slides are laid out on a fixed 16:9 canvas (1440×810) and scaled to fit the win
 
 - **← / →** move between slides
 - **F** toggles fullscreen
+- The Edit and Export buttons stay hidden while you present; move the mouse to the bottom-left corner (or tap there) to show them
 
 ---
 
