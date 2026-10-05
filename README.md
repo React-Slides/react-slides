@@ -96,7 +96,7 @@ npm run dev
 
 ## Creating Slides
 
-Slides can be created directly using markdown syntax in the `MarkDownForm` component. Separate slides with `---`.
+Slides can be created directly using markdown syntax in the `MarkDownForm` component. Separate slides with a line containing only `---` (ignored inside fenced code blocks). To draw a horizontal rule within a slide, use `***` or `___` instead.
 
 Example:
 

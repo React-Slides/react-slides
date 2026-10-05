@@ -14,6 +14,15 @@ theme: dark
       expect(result.content).toBe('# Hello World');
     });
 
+    it('extracts theme from frontmatter with CRLF line endings', () => {
+      const markdown = '---\r\ntheme: dark\r\n---\r\n# Hello World';
+
+      const result = parseFrontmatter(markdown);
+
+      expect(result.theme).toBe('dark');
+      expect(result.content).toBe('# Hello World');
+    });
+
     it('extracts corporate theme correctly', () => {
       const markdown = `---
 theme: corporate

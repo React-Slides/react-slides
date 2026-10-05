@@ -1,41 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { VisualizationProps } from './index';
-
-// Safe evaluation of simple mathematical functions
-const evaluateFunction = (funcStr: string, x: number): number => {
-  try {
-    // Replace common math functions with Math equivalents
-    const safeFunc = funcStr
-      .replace(/sin/g, 'Math.sin')
-      .replace(/cos/g, 'Math.cos')
-      .replace(/tan/g, 'Math.tan')
-      .replace(/sqrt/g, 'Math.sqrt')
-      .replace(/abs/g, 'Math.abs')
-      .replace(/log/g, 'Math.log')
-      .replace(/exp/g, 'Math.exp')
-      .replace(/pow/g, 'Math.pow')
-      .replace(/PI/g, 'Math.PI')
-      .replace(/E(?![a-z])/g, 'Math.E')
-      .replace(/\^/g, '**');
-
-    // Create a function that takes x and evaluates the expression
-    const fn = new Function('x', `return ${safeFunc}`);
-    const result = fn(x);
-    return isFinite(result) ? result : NaN;
-  } catch {
-    return NaN;
-  }
-};
+import { compileMathExpression, MathFunction } from '../../utils/compileMathExpression';
 
 // Simple numerical integration using trapezoidal rule
-const computeIntegral = (funcStr: string, a: number, b: number, n: number = 1000): number => {
+const computeIntegral = (fn: MathFunction, a: number, b: number, n: number = 1000): number => {
   const h = (b - a) / n;
   let sum = 0;
 
   for (let i = 0; i <= n; i++) {
     const x = a + i * h;
-    const y = evaluateFunction(funcStr, x);
+    const y = fn(x);
     if (isNaN(y)) continue;
     sum += y * (i === 0 || i === n ? 0.5 : 1);
   }
@@ -52,6 +27,8 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
   const [bounds, setBounds] = useState<[number, number]>(defaultBounds);
   const [domain] = useState<[number, number]>(defaultDomain);
 
+  const fn = useMemo(() => compileMathExpression(funcStr), [funcStr]);
+
   const { data, areaData, integralValue } = useMemo(() => {
     const [xMin, xMax] = domain;
     const [a, b] = bounds;
@@ -60,7 +37,7 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
     const step = (xMax - xMin) / 150;
 
     for (let x = xMin; x <= xMax; x += step) {
-      const y = evaluateFunction(funcStr, x);
+      const y = fn ? fn(x) : NaN;
       if (!isNaN(y) && isFinite(y)) {
         const point = { x: parseFloat(x.toFixed(4)), y: parseFloat(y.toFixed(4)) };
         points.push(point);
@@ -74,14 +51,15 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
       }
     }
 
-    const integral = computeIntegral(funcStr, a, b);
+    // An invalid expression has no integral; show that instead of a misleading 0
+    const integral = fn ? computeIntegral(fn, a, b) : null;
 
     return {
       data: points,
       areaData: areaPoints,
-      integralValue: parseFloat(integral.toFixed(4)),
+      integralValue: integral === null ? null : parseFloat(integral.toFixed(4)),
     };
-  }, [funcStr, bounds, domain]);
+  }, [fn, bounds, domain]);
 
   const yDomain = useMemo(() => {
     if (config.range) return config.range;
@@ -198,7 +176,7 @@ const IntegralAreaViz: React.FC<VisualizationProps> = ({ config, interactive = t
 
       <div style={{ textAlign: 'center', marginTop: '0.25rem' }}>
         <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--slide-accent)' }}>
-          {'\u222B'}<sub>{bounds[0]}</sub><sup>{bounds[1]}</sup> {funcStr} dx = {integralValue}
+          {'\u222B'}<sub>{bounds[0]}</sub><sup>{bounds[1]}</sup> {funcStr} dx = {integralValue ?? 'invalid expression'}
         </div>
       </div>
     </div>

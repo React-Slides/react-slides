@@ -14,7 +14,7 @@ export { default as TemplatePicker } from './components/TemplatePicker';
 export { default as MathVisualRenderer } from './components/MathVisualRenderer';
 
 // Export utility functions
-export { parseSlideContent } from './utils/parseSlideContent';
+export { parseSlideContent, parseSlides, splitSlides } from './utils/parseSlideContent';
 export { parseFrontmatter, injectTheme } from './utils/parseFrontmatter';
 export { exportSlidesToPDF } from './utils/exportSlidesToPDF';
 export { exportSlidesToPPTX } from './utils/exportSlidesToPPTX';

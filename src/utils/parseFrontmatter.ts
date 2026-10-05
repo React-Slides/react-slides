@@ -9,8 +9,8 @@ export interface ParsedMarkdown {
   content: string; // markdown without frontmatter
 }
 
-// Regex to match YAML frontmatter at start of document
-const FRONTMATTER_REGEX = /^---\n([\s\S]*?)\n---\n?/;
+// Regex to match YAML frontmatter at start of document (LF or CRLF line endings)
+const FRONTMATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n)?/;
 
 /**
  * Parse frontmatter from markdown and extract theme

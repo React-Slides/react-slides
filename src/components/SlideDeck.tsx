@@ -1,30 +1,38 @@
 // SlideDeck.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
+import SlideErrorBoundary from './SlideErrorBoundary';
 import { SlideDeckProps } from '../types';
-import { parseSlideContent, ParsedSlide } from '../utils/parseSlideContent';
+import { parseSlides, ParsedSlide } from '../utils/parseSlideContent';
+import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme } from '../utils/themes';
 
-const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
+// Arrow keys typed into form fields (e.g. a visualization's f(x) input) shouldn't change slides
+const isEditableTarget = (target: EventTarget | null): boolean => {
+  if (!(target instanceof HTMLElement)) return false;
+  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+};
+
+const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slides, setSlides] = useState<ParsedSlide[]>([]);
+  const { theme: frontmatterTheme, content } = useMemo(() => parseFrontmatter(markdownContent ?? ''), [markdownContent]);
 
-  // Get theme styles as CSS variables
-  const themeStyles = getTheme(theme);
+  // Get theme styles as CSS variables; an explicit prop overrides the frontmatter theme
+  const themeStyles = getTheme(theme ?? frontmatterTheme);
 
   useEffect(() => {
     if (markdownContent) {
-      const rawSlides = markdownContent.split(/^---$/m);
-      const parsedSlides = rawSlides
-        .map(slide => parseSlideContent(slide))
-        .filter(parsed => parsed.blocks.length > 0);
+      const parsedSlides = parseSlides(content);
       setSlides(parsedSlides);
+      // Keep the current index valid if the new deck has fewer slides
+      setCurrentSlide(prev => Math.min(prev, Math.max(parsedSlides.length - 1, 0)));
     }
-  }, [markdownContent]);
+  }, [markdownContent, content]);
 
   const nextSlide = useCallback(() => {
     if (currentSlide < slides.length - 1) setCurrentSlide(prev => prev + 1);
@@ -37,6 +45,7 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || isEditableTarget(e.target)) return;
       if (e.key === 'ArrowRight') nextSlide();
       if (e.key === 'ArrowLeft') prevSlide();
     };
@@ -81,41 +90,43 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme = 'light' 
         {/* Single container for all slide content */}
         <div className="absolute inset-0 p-6 flex flex-col justify-center">
           <div className="max-w-4xl mx-auto w-full">
-            {/* Render markdown content if present */}
-            {markdownBlock && (
-              <div className="mb-0">
-                <MarkdownSlide
-                  index={0}
-                  content={markdownBlock.content}
-                  isActive={true}
-                />
-              </div>
-            )}
+            <SlideErrorBoundary resetKey={currentParsedSlide}>
+              {/* Render markdown content if present */}
+              {markdownBlock && (
+                <div className="mb-0">
+                  <MarkdownSlide
+                    index={0}
+                    content={markdownBlock.content}
+                    isActive={true}
+                  />
+                </div>
+              )}
 
-            {/* Render chart if present */}
-            {chartBlock && (
-              <div className="relative z-20">
-                <ChartRenderer config={chartBlock.config} />
-              </div>
-            )}
+              {/* Render chart if present */}
+              {chartBlock && (
+                <div className="relative z-20">
+                  <ChartRenderer config={chartBlock.config} />
+                </div>
+              )}
 
-            {/* Render animation if present */}
-            {animateBlock && (
-              <div className="relative z-20">
-                <AnimationWrapper config={animateBlock.config}>
-                  <div className="text-center p-8">
-                    <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
-                  </div>
-                </AnimationWrapper>
-              </div>
-            )}
+              {/* Render animation if present */}
+              {animateBlock && (
+                <div className="relative z-20">
+                  <AnimationWrapper config={animateBlock.config}>
+                    <div className="text-center p-8">
+                      <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
+                    </div>
+                  </AnimationWrapper>
+                </div>
+              )}
 
-            {/* Render math-visual if present */}
-            {mathVisualBlock && (
-              <div className="relative z-20">
-                <MathVisualRenderer config={mathVisualBlock.config} />
-              </div>
-            )}
+              {/* Render math-visual if present */}
+              {mathVisualBlock && (
+                <div className="relative z-20">
+                  <MathVisualRenderer config={mathVisualBlock.config} />
+                </div>
+              )}
+            </SlideErrorBoundary>
           </div>
         </div>
 

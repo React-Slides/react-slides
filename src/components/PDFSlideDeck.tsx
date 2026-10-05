@@ -3,24 +3,25 @@ import MarkdownSlide from './MarkdownSlide';
 import ChartRenderer from './ChartRenderer';
 import AnimationWrapper from './AnimationWrapper';
 import MathVisualRenderer from './MathVisualRenderer';
-import { parseSlideContent } from '../utils/parseSlideContent';
+import SlideErrorBoundary from './SlideErrorBoundary';
+import { parseSlides } from '../utils/parseSlideContent';
+import { parseFrontmatter } from '../utils/parseFrontmatter';
 import { getTheme, ThemeName } from '../utils/themes';
+import { EXPORT_SLIDE_WIDTH, EXPORT_SLIDE_HEIGHT } from '../utils/renderSlidesForExport';
 
 interface PDFSlideDeckProps {
   markdownContent: string;
   theme?: ThemeName;
 }
 
-const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'light' }) => {
-  // Get theme styles as CSS variables
-  const themeStyles = getTheme(theme);
-
+const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme }) => {
   // Parse all slides at once for PDF export
   // Notes are automatically excluded since we only render the blocks
-  const rawSlides = markdownContent.split(/^---$/m);
-  const slides = rawSlides
-    .map(slide => parseSlideContent(slide))
-    .filter(parsed => parsed.blocks.length > 0);
+  const { theme: frontmatterTheme, content } = parseFrontmatter(markdownContent);
+  const slides = parseSlides(content);
+
+  // Get theme styles as CSS variables; an explicit prop overrides the frontmatter theme
+  const themeStyles = getTheme(theme ?? frontmatterTheme);
 
   return (
     <div className="pdf-export-container">
@@ -37,8 +38,8 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
             className="slide-container p-8"
             style={{
               ...themeStyles,
-              width: '1024px',
-              height: '768px',
+              width: `${EXPORT_SLIDE_WIDTH}px`,
+              height: `${EXPORT_SLIDE_HEIGHT}px`,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -48,41 +49,43 @@ const PDFSlideDeck: React.FC<PDFSlideDeckProps> = ({ markdownContent, theme = 'l
             } as React.CSSProperties}
           >
             <div className="max-w-4xl mx-auto w-full">
-              {/* Render markdown content */}
-              {markdownBlock && (
-                <div className="mb-8">
-                  <MarkdownSlide
-                    index={index}
-                    content={markdownBlock.content}
-                    isActive={true}
-                  />
-                </div>
-              )}
+              <SlideErrorBoundary>
+                {/* Render markdown content */}
+                {markdownBlock && (
+                  <div className="mb-8">
+                    <MarkdownSlide
+                      index={index}
+                      content={markdownBlock.content}
+                      isActive={true}
+                    />
+                  </div>
+                )}
 
-              {/* Render chart in final state */}
-              {chartBlock && (
-                <div className="relative">
-                  <ChartRenderer config={chartBlock.config} />
-                </div>
-              )}
+                {/* Render chart in final state */}
+                {chartBlock && (
+                  <div className="relative">
+                    <ChartRenderer config={chartBlock.config} />
+                  </div>
+                )}
 
-              {/* Render animation in final state (static) */}
-              {animateBlock && (
-                <div className="relative">
-                  <AnimationWrapper config={animateBlock.config}>
-                    <div className="text-center p-8">
-                      <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
-                    </div>
-                  </AnimationWrapper>
-                </div>
-              )}
+                {/* Render animation in final state (static) */}
+                {animateBlock && (
+                  <div className="relative">
+                    <AnimationWrapper config={animateBlock.config}>
+                      <div className="text-center p-8">
+                        <h2 className="text-2xl font-bold">Animation: {animateBlock.config.type}</h2>
+                      </div>
+                    </AnimationWrapper>
+                  </div>
+                )}
 
-              {/* Render math-visual in export mode (static, no flip) */}
-              {mathVisualBlock && (
-                <div className="relative">
-                  <MathVisualRenderer config={mathVisualBlock.config} isExport={true} />
-                </div>
-              )}
+                {/* Render math-visual in export mode (static, no flip) */}
+                {mathVisualBlock && (
+                  <div className="relative">
+                    <MathVisualRenderer config={mathVisualBlock.config} isExport={true} />
+                  </div>
+                )}
+              </SlideErrorBoundary>
             </div>
           </div>
         );

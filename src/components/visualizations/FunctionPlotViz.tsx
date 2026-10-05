@@ -1,32 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { VisualizationProps } from './index';
+import { compileMathExpression } from '../../utils/compileMathExpression';
 
-// Safe evaluation of simple mathematical functions
-const evaluateFunction = (funcStr: string, x: number): number => {
-  try {
-    // Replace common math functions with Math equivalents
-    const safeFunc = funcStr
-      .replace(/sin/g, 'Math.sin')
-      .replace(/cos/g, 'Math.cos')
-      .replace(/tan/g, 'Math.tan')
-      .replace(/sqrt/g, 'Math.sqrt')
-      .replace(/abs/g, 'Math.abs')
-      .replace(/log/g, 'Math.log')
-      .replace(/exp/g, 'Math.exp')
-      .replace(/pow/g, 'Math.pow')
-      .replace(/PI/g, 'Math.PI')
-      .replace(/E(?![a-z])/g, 'Math.E')
-      .replace(/\^/g, '**');
-
-    // Create a function that takes x and evaluates the expression
-    const fn = new Function('x', `return ${safeFunc}`);
-    const result = fn(x);
-    return isFinite(result) ? result : NaN;
-  } catch {
-    return NaN;
-  }
-};
 
 const FunctionPlotViz: React.FC<VisualizationProps> = ({ config, interactive = true }) => {
   const defaultFunc = config.func || 'x^2';
@@ -35,20 +11,22 @@ const FunctionPlotViz: React.FC<VisualizationProps> = ({ config, interactive = t
   const [funcStr, setFuncStr] = useState(defaultFunc);
   const [domain, setDomain] = useState<[number, number]>(defaultDomain);
 
+  const fn = useMemo(() => compileMathExpression(funcStr), [funcStr]);
+
   const data = useMemo(() => {
     const [xMin, xMax] = domain;
     const points = [];
     const step = (xMax - xMin) / 100;
 
     for (let x = xMin; x <= xMax; x += step) {
-      const y = evaluateFunction(funcStr, x);
+      const y = fn ? fn(x) : NaN;
       if (!isNaN(y) && isFinite(y)) {
         points.push({ x: parseFloat(x.toFixed(4)), y: parseFloat(y.toFixed(4)) });
       }
     }
 
     return points;
-  }, [funcStr, domain]);
+  }, [fn, domain]);
 
   const yDomain = useMemo(() => {
     if (config.range) return config.range;

@@ -50,7 +50,8 @@ const ChartRenderer: React.FC<ChartRendererProps> = ({ config }) => {
     }
   }, []);
 
-  const { type, title, data } = config;
+  const { type, title } = config;
+  const data = Array.isArray(config.data) ? config.data : [];
 
   const renderChart = () => {
     switch (type) {
