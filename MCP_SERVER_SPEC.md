@@ -960,10 +960,10 @@ The MCP server should import and reuse existing utilities from react-slides:
 
 ```typescript
 // Import from react-slides package
-import { parseSlideContent, ParsedSlide } from '@str-ventures/react-slides';
-import { parseFrontmatter, injectTheme } from '@str-ventures/react-slides';
-import { getTheme, isValidTheme, ThemeName } from '@str-ventures/react-slides';
-import { TEMPLATES } from '@str-ventures/react-slides';
+import { parseSlideContent, ParsedSlide } from '@react-slides/react-slides';
+import { parseFrontmatter, injectTheme } from '@react-slides/react-slides';
+import { getTheme, isValidTheme, ThemeName } from '@react-slides/react-slides';
+import { TEMPLATES } from '@react-slides/react-slides';
 ```
 
 ---
