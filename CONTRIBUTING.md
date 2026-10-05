@@ -71,7 +71,7 @@ We love your input! We want to make contributing to this project as easy and tra
 CI (`.github/workflows/ci.yml`) runs typecheck, tests, and the library and demo builds on every pull request. It is not re-run when a PR merges to `main`; the merge only triggers the GitHub Pages deploy.
 
 - Open a **draft** PR while you're still iterating. CI skips drafts and runs once you mark the PR ready for review.
-- Docs-only changes (root `*.md`, `docs/`) don't trigger CI.
+- PRs that only change docs (root `*.md`, `docs/`) don't trigger CI. The check covers the whole PR, so a docs commit pushed to a PR that also changes code still runs it.
 - Workflows from first-time contributors' forks wait for a maintainer to approve them. Fork PRs get a read-only token and no secrets.
 
 ### Reporting Bugs
