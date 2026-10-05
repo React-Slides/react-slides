@@ -63,13 +63,15 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
     }
   }, [markdownContent, content]);
 
+  // Clamp inside the updater: several key presses can land before a re-render, and checking
+  // the rendered index would let them all through and run past the last slide
   const nextSlide = useCallback(() => {
-    if (currentSlide < slides.length - 1) setCurrentSlide(prev => prev + 1);
-  }, [currentSlide, slides.length]);
+    setCurrentSlide(prev => Math.min(prev + 1, Math.max(slides.length - 1, 0)));
+  }, [slides.length]);
 
   const prevSlide = useCallback(() => {
-    if (currentSlide > 0) setCurrentSlide(prev => prev - 1);
-  }, [currentSlide]);
+    setCurrentSlide(prev => Math.max(prev - 1, 0));
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {

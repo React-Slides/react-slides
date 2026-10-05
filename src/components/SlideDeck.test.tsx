@@ -1,5 +1,5 @@
 // src/components/SlideDeck.test.tsx
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import SlideDeck from './SlideDeck';
 
 // Mock console.log to suppress slide debug output
@@ -248,6 +248,33 @@ describe('SlideDeck', () => {
       await waitFor(() => {
         expect(screen.getByText('Slide 2')).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('rapid navigation', () => {
+    it('stops at the last slide when several key presses arrive before a re-render', () => {
+      render(<SlideDeck markdownContent={'# Slide 1\n\n---\n\n# Slide 2\n\n---\n\n# Slide 3'} />);
+
+      act(() => {
+        for (let i = 0; i < 10; i++) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+        }
+      });
+
+      expect(screen.getByText('Slide 3')).toBeInTheDocument();
+    });
+
+    it('stops at the first slide on rapid ArrowLeft presses', () => {
+      render(<SlideDeck markdownContent={'# Slide 1\n\n---\n\n# Slide 2'} />);
+      fireEvent.keyDown(window, { key: 'ArrowRight' });
+
+      act(() => {
+        for (let i = 0; i < 10; i++) {
+          window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
+        }
+      });
+
+      expect(screen.getByText('Slide 1')).toBeInTheDocument();
     });
   });
 
