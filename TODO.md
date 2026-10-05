@@ -47,7 +47,7 @@ Re-enable Actions safely for an open source repo, without running tests twice pe
 
 - [x] CI runs on pull requests only, not again on push to `main` (the PR head was already verified)
 - [x] Skip CI on draft PRs; run when marked ready for review
-- [x] Skip CI and Pages deploy for docs-only changes (root `*.md`, `docs/`, `LICENSE`)
+- [x] Skip the Pages deploy for docs-only pushes (CI still runs: a required check skipped by a path filter would block the PR)
 - [x] Cancel superseded runs on the same PR
 - [x] Use `pull_request` (never `pull_request_target`), `contents: read`, `persist-credentials: false`
 - [x] Pin third-party actions to commit SHAs
@@ -56,6 +56,6 @@ Re-enable Actions safely for an open source repo, without running tests twice pe
 - [x] Add job timeouts
 - [x] Add `npm run check` (typecheck + tests) for running locally before pushing; document in CONTRIBUTING
 - [x] Same hardening and upgrade for `publish.yml` (done in #91 to avoid conflicts)
-- [ ] Repo setting: require approval for workflows from **all** outside contributors (currently first-time only)
-- [ ] Branch protection on `main`: require the `CI / test` check, so nothing reaches the Pages deploy untested
+- [x] Repo setting: require approval for workflows from **all** outside contributors
+- [x] Branch protection on `main`: require the `test` check from GitHub Actions
 - [ ] Re-enable `traffic-archive.yml` once `TRAFFIC_TOKEN` is set (disabled by GitHub for inactivity; failing without the token)

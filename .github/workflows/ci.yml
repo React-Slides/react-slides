@@ -8,11 +8,8 @@ name: CI
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths-ignore:
-      - '*.md'
-      - 'docs/**'
-      - 'LICENSE'
-      - '.github/instructions/**'
+    # No paths-ignore: `test` is a required check on main, and a workflow skipped by
+    # a path filter never reports, which would block docs-only PRs
   workflow_dispatch:
 
 permissions:
