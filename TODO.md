@@ -55,7 +55,7 @@ Re-enable Actions safely for an open source repo, without running tests twice pe
 - [x] Install with `npm ci --ignore-scripts` so dependency install scripts can't run in CI
 - [x] Add job timeouts
 - [x] Add `npm run check` (typecheck + tests) for running locally before pushing; document in CONTRIBUTING
-- [ ] Pin actions in `publish.yml` to SHAs and use `--ignore-scripts` (after #91 merges, to avoid conflicts)
+- [x] Same hardening and upgrade for `publish.yml` (done in #91 to avoid conflicts)
 - [ ] Repo setting: require approval for workflows from **all** outside contributors (currently first-time only)
 - [ ] Branch protection on `main`: require the `CI / test` check, so nothing reaches the Pages deploy untested
 - [ ] Re-enable `traffic-archive.yml` once `TRAFFIC_TOKEN` is set (disabled by GitHub for inactivity; failing without the token)
