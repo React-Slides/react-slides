@@ -511,4 +511,15 @@ type: fade-in
       expect(requestFullscreen).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('slide layouts', () => {
+    it('applies the title layout to a slide marked with <!-- layout: title -->', () => {
+      render(<SlideDeck markdownContent={'<!-- layout: title -->\n# Deck\n## Do It Now'} />);
+
+      const content = screen.getByTestId('slide-canvas').firstElementChild;
+      expect(content).toHaveClass('slide-layout-title');
+      expect(content).toHaveAttribute('data-layout', 'title');
+      expect(screen.queryByText(/layout:/)).not.toBeInTheDocument();
+    });
+  });
 });

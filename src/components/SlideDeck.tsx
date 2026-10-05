@@ -157,7 +157,8 @@ const SlideDeck: React.FC<SlideDeckProps> = ({ markdownContent, theme }) => {
         >
           <div
             ref={contentRef}
-            className="max-w-6xl mx-auto w-full"
+            data-layout={currentParsedSlide.layout}
+            className={`max-w-6xl mx-auto w-full${currentParsedSlide.layout ? ` slide-layout-${currentParsedSlide.layout}` : ''}`}
             style={contentScale < 1 ? { transform: `scale(${contentScale})` } : undefined}
           >
             <SlideErrorBoundary resetKey={currentParsedSlide}>

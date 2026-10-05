@@ -30,9 +30,30 @@ export type SlideBlock =
   | { type: 'animate'; config: any }
   | { type: 'math-visual'; config: MathVisualConfig };
 
+/** Slide-wide layouts, set with `<!-- layout: title -->` anywhere in a slide */
+export type SlideLayout = 'title';
+const SLIDE_LAYOUTS: readonly SlideLayout[] = ['title'];
+
 export interface ParsedSlide {
   blocks: SlideBlock[];
   notes?: string;
+  layout?: SlideLayout;
+}
+
+/**
+ * Extracts a `<!-- layout: name -->` directive. The comment is always removed; an unknown
+ * layout name is ignored.
+ */
+function extractLayout(content: string): { content: string; layout?: SlideLayout } {
+  const layoutRegex = /<!--\s*layout:\s*([a-z-]+)\s*-->/i;
+  const match = content.match(layoutRegex);
+  if (!match) return { content };
+
+  const name = match[1].toLowerCase() as SlideLayout;
+  return {
+    content: content.replace(layoutRegex, '').trim(),
+    layout: SLIDE_LAYOUTS.includes(name) ? name : undefined,
+  };
 }
 
 /**
@@ -60,8 +81,10 @@ function extractNotes(content: string): { content: string; notes?: string } {
  * @param raw Markdown string for a single slide
  */
 export function parseSlideContent(raw: string): ParsedSlide {
-  // First extract speaker notes
-  const { content: contentWithoutNotes, notes } = extractNotes(raw);
+  // First extract the layout directive and speaker notes
+  const { content: withoutLayout, layout } = extractLayout(raw);
+  const { content: contentWithoutNotes, notes } = extractNotes(withoutLayout);
+  const slideMeta = layout ? { notes, layout } : { notes };
 
   const codeBlockRegex = /```(chart|animate|math-visual)\s*\n([\s\S]*?)```/m;
   const match = contentWithoutNotes.match(codeBlockRegex);
@@ -90,10 +113,10 @@ export function parseSlideContent(raw: string): ParsedSlide {
       { type: blockType as 'chart' | 'animate' | 'math-visual', config }
     ];
 
-    return { blocks: parsedBlocks, notes };
+    return { blocks: parsedBlocks, ...slideMeta };
   }
 
-  return { blocks: [{ type: 'markdown', content: contentWithoutNotes.trim() }], notes };
+  return { blocks: [{ type: 'markdown', content: contentWithoutNotes.trim() }], ...slideMeta };
 }
 
 // Matches the opening/closing line of a fenced code block (``` or ~~~, up to 3 spaces indent)

@@ -44,6 +44,16 @@ body {
   --tw-prose-code: var(--slide-text);
 }
 
+/* Title slide layout (<!-- layout: title -->): centered, with a large subtitle set apart */
+.slide-layout-title {
+  text-align: center;
+}
+
+.slide-layout-title .prose h2 {
+  font-size: 2.5em;
+  margin-top: 1.5em;
+}
+
 /* Strikethrough (~~text~~): red line, text keeps its normal color */
 .prose del {
   text-decoration-color: #ef4444;

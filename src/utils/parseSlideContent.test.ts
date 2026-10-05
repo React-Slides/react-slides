@@ -274,6 +274,37 @@ Uppercase notes tag.
     });
   });
 
+  describe('layout directive', () => {
+    it('reads <!-- layout: title --> and removes it from the content', () => {
+      const result = parseSlideContent('<!-- layout: title -->\n# Deck\n## Subtitle');
+
+      expect(result.layout).toBe('title');
+      expect(result.blocks).toEqual([{ type: 'markdown', content: '# Deck\n## Subtitle' }]);
+    });
+
+    it('works alongside speaker notes and special blocks', () => {
+      const result = parseSlideContent(
+        '# Revenue\n<!-- layout: title -->\n<!--notes\nSay hi\n-->\n```chart\ntype: bar\n```'
+      );
+
+      expect(result.layout).toBe('title');
+      expect(result.notes).toBe('Say hi');
+      expect(result.blocks[0]).toEqual({ type: 'markdown', content: '# Revenue' });
+      expect(result.blocks[1].type).toBe('chart');
+    });
+
+    it('ignores an unknown layout but still hides the comment', () => {
+      const result = parseSlideContent('<!-- layout: sideways -->\n# Slide');
+
+      expect(result.layout).toBeUndefined();
+      expect(result.blocks).toEqual([{ type: 'markdown', content: '# Slide' }]);
+    });
+
+    it('leaves slides without a directive unchanged', () => {
+      expect(parseSlideContent('# Slide')).not.toHaveProperty('layout');
+    });
+  });
+
   describe('edge cases', () => {
     it('should handle empty content', () => {
       const raw = '';
