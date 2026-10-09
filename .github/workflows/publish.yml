@@ -26,16 +26,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          # Auto-caching would run npm before the npm 11 upgrade below
-          package-manager-cache: false
+          # Node 24 includes npm 11, which package.json devEngines requires
           node-version-file: .nvmrc
+          # No dependency cache when publishing: a fresh install can't pick up a poisoned cache
+          package-manager-cache: false
           registry-url: 'https://npm.pkg.github.com'
           # GitHub Packages requires the npm scope to match the repository owner
           scope: '@react-slides'
-
-      # package.json devEngines requires npm 11; npm 10 can't resolve this dependency tree
-      - name: Upgrade npm
-        run: npm install -g npm@11
 
       - name: Check release tag matches package.json version
         env:

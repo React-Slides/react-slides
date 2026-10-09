@@ -34,22 +34,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          # Auto-caching would run npm before the npm 11 upgrade below
-          package-manager-cache: false
+          # Node 24 includes npm 11, which package.json devEngines requires
           node-version-file: .nvmrc
-
-      # package.json devEngines requires npm 11; npm 10 can't resolve this dependency tree
-      - name: Upgrade npm
-        run: npm install -g npm@11
-
-      # Not setup-node's `cache: npm`: it runs npm in the repo before the upgrade above,
-      # which devEngines rejects
-      - name: Cache npm downloads
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-${{ runner.os }}-
+          cache: npm
 
       - name: Install dependencies
         run: npm ci --ignore-scripts
